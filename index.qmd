@@ -29,7 +29,7 @@ $$ $$
 
 $$ $$
 
-### Lecture Slides [as a Website](https://bayesian-econometrics-2023.github.io/be23-lecture7/)
+### Lecture Slides [as a Website](https://bayesian-econometrics-2023.github.io/be23-lecture8/)
 
 
 
@@ -55,5 +55,5 @@ $$ $$
 :::
 
 ::: footer
-[Bayesian VARs](https://bayesian-econometrics-2023.github.io/be23-lecture7/)
+[Bayesian Structural VARs](https://bayesian-econometrics-2023.github.io/be23-lecture8/)
 :::
