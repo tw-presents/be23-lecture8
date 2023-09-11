@@ -3,7 +3,7 @@ title: "Lecture 8: Bayesian Structural Vector Autoregressions"
 author: "by Tomasz Woźniak"
 email: "tomasz.wozniak@unimelb.edu.au"
 title-slide-attributes:
-  data-background-color: "#FF00FF"
+  data-background-color: "#9933FF"
 number-sections: false
 format: 
   revealjs: 
@@ -16,7 +16,7 @@ execute:
   echo: true
 ---
 
-##  {background-color="#FF00FF"}
+##  {background-color="#9933FF"}
 
 $$ $$
 
@@ -25,7 +25,7 @@ $$ $$
 
 
 
-## Materials {background-color="#FF00FF"}
+## Materials {background-color="#9933FF"}
 
 $$ $$
 
@@ -33,7 +33,7 @@ $$ $$
 
 
 
-## Structural Vector Autoregressions {background-color="#FF00FF"}
+## Structural Vector Autoregressions {background-color="#9933FF"}
 
 ## Structural Vector Autoregressions
 
