@@ -1,0 +1,59 @@
+---
+title: "Lecture 8: Bayesian Structural Vector Autoregressions"
+author: "by Tomasz Woźniak"
+email: "tomasz.wozniak@unimelb.edu.au"
+title-slide-attributes:
+  data-background-color: "#FF00FF"
+number-sections: false
+format: 
+  revealjs: 
+    theme: [simple, theme.scss]
+    slide-number: c
+    transition: concave
+    smaller: true
+    multiplex: true
+execute: 
+  echo: true
+---
+
+##  {background-color="#FF00FF"}
+
+$$ $$
+
+### Structural Vector Autoregressions
+
+
+
+
+## Materials {background-color="#FF00FF"}
+
+$$ $$
+
+### Lecture Slides [as a Website](https://bayesian-econometrics-2023.github.io/be23-lecture7/)
+
+
+
+## Structural Vector Autoregressions {background-color="#FF00FF"}
+
+## Structural Vector Autoregressions
+
+-   go-to models for forecasting
+
+::: incremental
+-   simple: *linear and Gaussian*
+-   extendible: *featuring many variations in specification*
+    -   non-normality
+    -   heteroskedasticity
+    -   time-varying parameters
+    -   Bayesian
+-   interpretable
+    -   Granger causality
+    -   spillovers
+    -   networks
+    -   structural
+-   Proposed by [Sims (1980)](https://doi.org/10.2307/1912017)
+:::
+
+::: footer
+[Bayesian VARs](https://bayesian-econometrics-2023.github.io/be23-lecture7/)
+:::
