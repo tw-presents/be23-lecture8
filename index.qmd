@@ -22,7 +22,15 @@ $$ $$
 
 ### Structural Vector Autoregressions
 
+### Identification of Structural VARs
 
+### Dynamic Causal Effects
+
+### Bayesian Estimation
+
+### Heteroskedastic Structural VARs
+
+### Monetary Policy Analysis Using the  [bsvars](https://cran.r-project.org/package=bsvars) Package
 
 
 ## Materials {background-color="#9933FF"}
@@ -31,29 +39,409 @@ $$ $$
 
 ### Lecture Slides [as a Website](https://bayesian-econometrics-2023.github.io/be23-lecture8/)
 
+### Quarto [document template](https://github.com/Bayesian-Econometrics-2023/be23-lecture8/blob/main/be23-lecture8.qmd) for your own Australian monetary policy analysis
+
+### GitHub [repo](https://github.com/Bayesian-Econometrics-2023/be23-lecture8) to reproduce the slides and results
+
+### Tasks
 
 
 ## Structural Vector Autoregressions {background-color="#9933FF"}
 
 ## Structural Vector Autoregressions
 
--   go-to models for forecasting
+- go-to models for the analysis of policy effects
 
 ::: incremental
--   simple: *linear and Gaussian*
--   extendible: *featuring many variations in specification*
+- facilitate the analysis of **dynamic causal effects** of a well-isolated cause
+- extensively used for: *monetary* and *fiscal* policy, *financial* markets, ...
+- relatively simple to work with data and provide *empirical evidence on the propagation of shocks* through economies and markets
+- provide data-driven stylised facts to be incorporated in theoretical model
+- require identification of the cause of the dynamic effects
+- extendible: *featuring many variations in specification*
     -   non-normality
     -   heteroskedasticity
     -   time-varying parameters
     -   Bayesian
--   interpretable
-    -   Granger causality
-    -   spillovers
-    -   networks
-    -   structural
 -   Proposed by [Sims (1980)](https://doi.org/10.2307/1912017)
 :::
 
 ::: footer
 [Bayesian Structural VARs](https://bayesian-econometrics-2023.github.io/be23-lecture8/)
 :::
+
+
+
+## Structural Vector Autoregressions
+
+::: footer
+[Bayesian Structural VARs](https://bayesian-econometrics-2023.github.io/be23-lecture8/)
+:::
+
+### The model.
+\begin{align}
+\text{VAR equation: }&& y_t &= \mathbf{A}_1 y_{t-1} + \dots + \mathbf{A}_p y_{t-p} + \boldsymbol\mu_0 + \epsilon_t\\[1ex]
+\text{structural equation: }&& \mathbf{B}\epsilon_t &= u_t\\[1ex]
+\text{structural shocks: }&& u_t |Y_{t-1} &\sim N_N\left(\mathbf{0}_N,\mathbf{I}_N\right)
+\end{align}
+
+::: {.fragment}
+### Notation.
+- $\mathbf{B}$ - $N\times N$ structural matrix of contemporaneous relationships
+- $u_t$ - $N$-vector of structural shocks at time $t$
+  
+  Isolating these shocks allows us to *identify dynamic effects of
+uncorrelated shocks* on variables $y_t$
+
+- $\epsilon_t$ - $N$-vector with VAR errors at time $t$
+- the rest as in [Lecture 7: Bayesian VARs](https://bayesian-econometrics-2023.github.io/be23-lecture7/#/varp-model)
+:::
+
+
+
+## Structural Vector Autoregressions
+
+::: footer
+[Bayesian Structural VARs](https://bayesian-econometrics-2023.github.io/be23-lecture8/)
+:::
+
+### The VAR errors.
+\begin{align}
+&&&\\
+\text{structural equation: }&& \epsilon_t &= \mathbf{B}^{-1}u_t\\[1ex]
+\text{structural shocks: }&& \epsilon_t |Y_{t-1} &\sim N_N\left(\mathbf{0}_N,\Sigma\right)\\[1ex]
+\text{covariance: }&& \mathbf\Sigma &= \mathbf{B}^{-1}\mathbf{B}^{-1\prime} = \Theta_0\Theta_0'
+\end{align}
+
+### Notation.
+- $\mathbf\Sigma$ - $N\times N$ covariance matrix of VAR errors 
+- $\Theta_0 = \mathbf{B}^{-1}$ - $N\times N$ matrix of **contemporaneous effects**
+
+
+## Structural Vector Autoregressions
+
+::: footer
+[Bayesian Structural VARs](https://bayesian-econometrics-2023.github.io/be23-lecture8/)
+:::
+
+Plug the *VAR equation* into the *structural equation* to obtain:
+
+\begin{align}
+\mathbf{B}y_t &= \mathbf{B}\mathbf{A}_1 y_{t-1} + \dots + \mathbf{B}\mathbf{A}_p y_{t-p} + \mathbf{B}\boldsymbol\mu_0 + u_t\\[1ex]
+&\\
+\end{align}
+
+### Contemporaneous relationships.
+
+Let $N=2$
+
+\begin{align}
+\mathbf{B}y_t &= \begin{bmatrix}B_{11}&B_{12}\\B_{21}&B_{22}\end{bmatrix}\begin{bmatrix}y_{1t}\\y_{2t}\end{bmatrix}
+\end{align}
+
+
+
+
+
+## Structural Vector Autoregressions
+
+::: footer
+[Bayesian Structural VARs](https://bayesian-econometrics-2023.github.io/be23-lecture8/)
+:::
+
+Plug the *structural equation* for $\epsilon_t$ into the *VAR equation* to obtain:
+
+\begin{align}
+y_t &= \mathbf{A}_1 y_{t-1} + \dots + \mathbf{A}_p y_{t-p} + \boldsymbol\mu_0 + \mathbf{B}^{-1}u_t\\[1ex]
+y_t &= \mathbf{A}_1 y_{t-1} + \dots + \mathbf{A}_p y_{t-p} + \boldsymbol\mu_0 + \mathbf{\Theta}_0 u_t
+\end{align}
+
+### Contemporaneous effects.
+
+Let $N=2$
+
+\begin{align}
+\begin{bmatrix}y_{1t}\\y_{2t}\end{bmatrix} &= \dots +
+\begin{bmatrix}\Theta_{11}&\Theta_{12}\\\Theta_{21}&\Theta_{22}\end{bmatrix}\begin{bmatrix}u_{1t}\\ u_{2t}\end{bmatrix}
+\end{align}
+
+### Task.
+
+What is the contemporaneous effect of the first shock on the second variable?
+
+
+
+
+
+## Identification of Structural VARs  {background-color="#9933FF"}
+
+## Identification of Structural VARs Simplified
+
+::: footer
+[Bayesian Structural VARs](https://bayesian-econometrics-2023.github.io/be23-lecture8/)
+:::
+
+### Covariance and structural relationships.
+
+\begin{align}
+&\\
+\mathbf\Sigma &= \mathbf{B}^{-1}\mathbf{B}^{-1\prime}\\[1ex]
+\end{align}
+
+- $\mathbf\Sigma$ can be estimated using data easily
+
+::: incremental
+- The relationship presents a system of equations to be solved for $\mathbf{B}$
+- $\mathbf\Sigma$ is a *symmetric* $N\times N$ matrix
+- $\mathbf\Sigma$ has $N(N+1)/2$ unique elements given equations
+- $\mathbf{B}$ is an $N\times N$ matrix with $N^2$ unique elements to estimate
+- We cannot estimate all elements of $\mathbf{B}$ using $N(N+1)/2$ equations
+- $\mathbf{B}$ is <text style="color:#9933FF;">**not identified**</p>
+:::
+
+
+
+## Identification of Structural VARs Simplified
+
+::: footer
+[Bayesian Structural VARs](https://bayesian-econometrics-2023.github.io/be23-lecture8/)
+:::
+
+### Covariance and structural relationships.
+
+\begin{align}
+&\\
+\mathbf\Sigma &= \mathbf{B}^{-1}\mathbf{B}^{-1\prime}\\[1ex]
+\end{align}
+
+### Identification.
+
+- Only $N(N+1)/2$ elements in $\mathbf{B}$ can be estimated
+- Impose $N(N-1)/2$ restrictions on $\mathbf{B}$ to solve the equation
+- This identifies the rows of $\mathbf{B}$ (and the columns of $\mathbf\Theta_0$) up to a sign
+- Change the sign of any number of $\mathbf{B}$ rows and $\mathbf\Sigma$ will not change
+- Often $\mathbf{B}$ is made lower-triangular
+
+
+
+## Identification of Structural VARs Simplified
+
+::: footer
+[Bayesian Structural VARs](https://bayesian-econometrics-2023.github.io/be23-lecture8/)
+:::
+
+### Covariance and structural relationships.
+
+Let $N=2$ 
+
+\begin{align}
+\begin{bmatrix}\sigma_1^2&\sigma_{12}\\ \sigma_{12}&\sigma_2^2\end{bmatrix} &\qquad
+\begin{bmatrix}B_{11}&B_{12}\\ B_{21}&B_{22}\end{bmatrix}\\[1ex]
+\end{align}
+
+- 3 unique elements in $\mathbf\Sigma$ - 3 equations in the system
+- 4 elements in $\mathbf{B}$ cannot be estimated
+
+### Identification.
+
+\begin{align}
+\begin{bmatrix}\sigma_1^2&\sigma_{12}\\ \sigma_{12}&\sigma_2^2\end{bmatrix} &\qquad
+\begin{bmatrix}B_{11}& 0\\ B_{21}&B_{22}\end{bmatrix}\\[1ex]
+\end{align}
+
+- 3 equations identify 3 elements in $\mathbf{B}$
+
+
+
+
+## Identification of Monetary Policy Shock
+
+::: footer
+[Bayesian Structural VARs](https://bayesian-econometrics-2023.github.io/be23-lecture8/)
+:::
+
+Consider a system of four variables:
+
+\begin{align}
+y_t = \begin{bmatrix} \Delta rgdp_t & \pi_t & cr_t & \Delta rtwi_t \end{bmatrix}'
+\end{align}
+
+- $\Delta rgdp_t$ - real Gross Domestic Product growth
+- $\pi_t$ - Consumer Price Index inflation
+- $cr_t$ - Cash Rate Target - Australian nominal interest rate
+- $\Delta rtwi_t$ - real Trade-Weighted Index rate of return (exchange rate)
+
+### Identified system.
+
+A lower-triangular matrix identifies: 
+
+- contemporaneous relationships $\mathbf{B}$
+- contemporaneous effects $\mathbf\Theta_0$
+- structural shocks $u_t$
+
+
+## Identification of Monetary Policy Shock
+
+::: footer
+[Bayesian Structural VARs](https://bayesian-econometrics-2023.github.io/be23-lecture8/)
+:::
+
+### Identified system.
+
+\begin{align}
+\begin{bmatrix}
+B_{11}&0&0&0\\
+B_{21}&B_{22}&0&0\\
+B_{31}&B_{32}&B_{33}&0\\
+B_{41}&B_{42}&B_{43}&B_{44}
+\end{bmatrix}
+\begin{bmatrix} \Delta rgdp_t \\ \pi_t \\ cr_t \\ \Delta rtwi_t \end{bmatrix} &= \dots + 
+\begin{bmatrix} u_t^{ad} \\ u_t^{as} \\ u_t^{mps} \\ u_t^{ex} \end{bmatrix}
+\end{align}
+
+### Identified shocks.
+
+$u_t^{ad}$ - aggregate demand shock is exogenous to the rest of the system
+
+$u_t^{as}$ - aggregate supply shock
+
+$u_t^{mps}$ - monetary policy shock identified via Taylor's Rule
+
+$u_t^{ex}$ - currency shock
+
+
+
+
+## Identification of Monetary Policy Shock
+
+::: footer
+[Bayesian Structural VARs](https://bayesian-econometrics-2023.github.io/be23-lecture8/)
+:::
+
+### Identified system.
+
+\begin{align}
+\begin{bmatrix}
+B_{11}&0&0&0\\
+B_{21}&B_{22}&0&0\\
+B_{31}&B_{32}&B_{33}&0\\
+B_{41}&B_{42}&B_{43}&B_{44}
+\end{bmatrix}
+\begin{bmatrix} \Delta rgdp_t \\ \pi_t \\ cr_t \\ \Delta rtwi_t \end{bmatrix} &= \dots + 
+\begin{bmatrix} u_t^{ad} \\ u_t^{as} \\ u_t^{mps} \\ u_t^{ex} \end{bmatrix}
+\end{align}
+
+### Tasks.
+
+- Write out the third equation for the cash rate.
+- Let $B_{33}>0$. What values of $B_{31}$ and $B_{32}$ does theory imply?
+
+
+
+
+## Identification of Monetary Policy Shock
+
+::: footer
+[Bayesian Structural VARs](https://bayesian-econometrics-2023.github.io/be23-lecture8/)
+:::
+
+### Identified system.
+
+\begin{align}
+\begin{bmatrix}
+B_{11}&0&0&0\\
+B_{21}&B_{22}&0&0\\
+B_{31}&B_{32}&B_{33}&0\\
+B_{41}&B_{42}&B_{43}&B_{44}
+\end{bmatrix}
+\begin{bmatrix} \Delta rgdp_t \\ \pi_t \\ cr_t \\ \Delta rtwi_t \end{bmatrix} &= \dots + 
+\begin{bmatrix} u_t^{ad} \\ u_t^{as} \\ u_t^{mps} \\ u_t^{ex} \end{bmatrix}
+\end{align}
+
+### Monetary policy shock.
+
+- is uncorrelated with any other shock
+- consists of the unanticipated (unpredictable) part of the *monetary policy instrument*, interest rate
+- In this model, the systematic part of the monetary policy consists of:
+  - contemporaneous relationships with GDP and inflation
+  - lagged relationships with all variables
+
+
+## Dynamic Causal Effects {background-color="#9933FF"}
+
+## Dynamic Causal Effects
+
+
+
+
+
+
+
+
+
+
+
+
+## Bayesian Estimation {background-color="#9933FF"}
+
+## Bayesian Estimation
+
+::: footer
+[Bayesian Structural VARs](https://bayesian-econometrics-2023.github.io/be23-lecture8/)
+:::
+
+## Heteroskedastic Structural VARs {background-color="#9933FF"}
+
+## Heteroskedastic Structural VARs
+
+::: footer
+[Bayesian Structural VARs](https://bayesian-econometrics-2023.github.io/be23-lecture8/)
+:::
+
+
+
+
+## Monetary Policy Analysis Using R Package [bsvars](https://cran.r-project.org/package=bsvars) {background-color="#9933FF"}
+
+## Data preparation
+
+```{r}
+#| label: data
+#| cache: true
+#| warning: false
+#| fig-align: "center"
+#| fig-height: 6
+#| output-location: slide
+
+# Gross domestic product (GDP); Chain volume
+rgdp_dwnld      = readrba::read_rba(series_id = "GGDPCVGDP")
+rgdp_tmp        = xts::xts(rgdp_dwnld$value, rgdp_dwnld$date, tclass = 'yearqtr')
+drgdp           = na.omit(400 * diff(log(rgdp_tmp)))
+drgdp           = xts::to.quarterly(drgdp, OHLC = FALSE)
+
+# Consumer price index; All groups; Quarterly change (in per cent)
+picpi_dwnld     = readrba::read_rba(series_id = "GCPIAGSAQP")
+pi              = 4 * xts::xts(picpi_dwnld$value, picpi_dwnld$date, tclass = 'yearqtr')
+pi              = xts::to.quarterly(pi, OHLC = FALSE)
+
+# Interbank Overnight Cash Rate
+cr_dwnld        = readrba::read_rba(series_id = "FIRMMCRID")   # Cash Rate Target
+cr_tmp          = xts::xts(cr_dwnld$value, cr_dwnld$date)
+cr              = xts::to.quarterly(cr_tmp, OHLC = FALSE)
+
+# Real Trade-Weighted Index
+rtwi_dwnld      = readrba::read_rba(series_id = "FRERTWI")
+rtwi_tmp        = xts::xts(rtwi_dwnld$value, rtwi_dwnld$date, tclass = 'yearqtr')
+rtwi            = 100 * na.omit(diff(log(rtwi_tmp)))
+rtwi            = xts::to.quarterly(rtwi, OHLC = FALSE)
+
+y               = na.omit(merge(drgdp, pi, cr, rtwi))
+plot(y, main = "Australian monetary system", 
+     legend.loc = "bottomleft", col = c("#FF00FF","#990099","#9933FF","#330033"))
+```
+
+::: footer
+[Bayesian Structural VARs](https://bayesian-econometrics-2023.github.io/be23-lecture8/)
+:::
+
+

@@ -29,6 +29,71 @@
       margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
       vertical-align: middle;
     }
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      { color: #003b4f; background-color: #f1f3f5; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #003b4f; } /* Normal */
+    code span.al { color: #ad0000; } /* Alert */
+    code span.an { color: #5e5e5e; } /* Annotation */
+    code span.at { color: #657422; } /* Attribute */
+    code span.bn { color: #ad0000; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #003b4f; } /* ControlFlow */
+    code span.ch { color: #20794d; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #5e5e5e; } /* Comment */
+    code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
+    code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
+    code span.dt { color: #ad0000; } /* DataType */
+    code span.dv { color: #ad0000; } /* DecVal */
+    code span.er { color: #ad0000; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #ad0000; } /* Float */
+    code span.fu { color: #4758ab; } /* Function */
+    code span.im { color: #00769e; } /* Import */
+    code span.in { color: #5e5e5e; } /* Information */
+    code span.kw { color: #003b4f; } /* Keyword */
+    code span.op { color: #5e5e5e; } /* Operator */
+    code span.ot { color: #003b4f; } /* Other */
+    code span.pp { color: #ad0000; } /* Preprocessor */
+    code span.sc { color: #5e5e5e; } /* SpecialChar */
+    code span.ss { color: #20794d; } /* SpecialString */
+    code span.st { color: #20794d; } /* String */
+    code span.va { color: #111111; } /* Variable */
+    code span.vs { color: #20794d; } /* VerbatimString */
+    code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   </style>
   <link rel="stylesheet" href="index_files/libs/revealjs/dist/theme/quarto.css">
   <link href="index_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
@@ -340,11 +405,19 @@ by Tomasz Woźniak
 <h2></h2>
 <p><span class="math display">\[ \]</span></p>
 <h3 id="structural-vector-autoregressions">Structural Vector Autoregressions</h3>
+<h3 id="identification-of-structural-vars">Identification of Structural VARs</h3>
+<h3 id="dynamic-causal-effects">Dynamic Causal Effects</h3>
+<h3 id="bayesian-estimation">Bayesian Estimation</h3>
+<h3 id="heteroskedastic-structural-vars">Heteroskedastic Structural VARs</h3>
+<h3 id="monetary-policy-analysis-using-the-bsvars-package">Monetary Policy Analysis Using the <a href="https://cran.r-project.org/package=bsvars">bsvars</a> Package</h3>
 </section>
 <section id="materials" class="slide level2" data-background-color="#9933FF">
 <h2>Materials</h2>
 <p><span class="math display">\[ \]</span></p>
 <h3 id="lecture-slides-as-a-website">Lecture Slides <a href="https://bayesian-econometrics-2023.github.io/be23-lecture8/">as a Website</a></h3>
+<h3 id="quarto-document-template-for-your-own-australian-monetary-policy-analysis">Quarto <a href="https://github.com/Bayesian-Econometrics-2023/be23-lecture8/blob/main/be23-lecture8.qmd">document template</a> for your own Australian monetary policy analysis</h3>
+<h3 id="github-repo-to-reproduce-the-slides-and-results">GitHub <a href="https://github.com/Bayesian-Econometrics-2023/be23-lecture8">repo</a> to reproduce the slides and results</h3>
+<h3 id="tasks">Tasks</h3>
 </section>
 <section id="structural-vector-autoregressions-1" class="slide level2" data-background-color="#9933FF">
 <h2>Structural Vector Autoregressions</h2>
@@ -352,11 +425,15 @@ by Tomasz Woźniak
 <section id="structural-vector-autoregressions-2" class="slide level2">
 <h2>Structural Vector Autoregressions</h2>
 <ul>
-<li>go-to models for forecasting</li>
+<li>go-to models for the analysis of policy effects</li>
 </ul>
 <div>
 <ul>
-<li class="fragment">simple: <em>linear and Gaussian</em></li>
+<li class="fragment">facilitate the analysis of <strong>dynamic causal effects</strong> of a well-isolated cause</li>
+<li class="fragment">extensively used for: <em>monetary</em> and <em>fiscal</em> policy, <em>financial</em> markets, …</li>
+<li class="fragment">relatively simple to work with data and provide <em>empirical evidence on the propagation of shocks</em> through economies and markets</li>
+<li class="fragment">provide data-driven stylised facts to be incorporated in theoretical model</li>
+<li class="fragment">require identification of the cause of the dynamic effects</li>
 <li class="fragment">extendible: <em>featuring many variations in specification</em>
 <ul>
 <li class="fragment">non-normality</li>
@@ -364,16 +441,311 @@ by Tomasz Woźniak
 <li class="fragment">time-varying parameters</li>
 <li class="fragment">Bayesian</li>
 </ul></li>
-<li class="fragment">interpretable
-<ul>
-<li class="fragment">Granger causality</li>
-<li class="fragment">spillovers</li>
-<li class="fragment">networks</li>
-<li class="fragment">structural</li>
-</ul></li>
 <li class="fragment">Proposed by <a href="https://doi.org/10.2307/1912017">Sims (1980)</a></li>
 </ul>
 </div>
+<div class="footer">
+<p><a href="https://bayesian-econometrics-2023.github.io/be23-lecture8/">Bayesian Structural VARs</a></p>
+</div>
+</section>
+<section id="structural-vector-autoregressions-3" class="slide level2">
+<h2>Structural Vector Autoregressions</h2>
+<div class="footer">
+<p><a href="https://bayesian-econometrics-2023.github.io/be23-lecture8/">Bayesian Structural VARs</a></p>
+</div>
+<h3 id="the-model.">The model.</h3>
+<p><span class="math display">\[\begin{align}
+\text{VAR equation: }&amp;&amp; y_t &amp;= \mathbf{A}_1 y_{t-1} + \dots + \mathbf{A}_p y_{t-p} + \boldsymbol\mu_0 + \epsilon_t\\[1ex]
+\text{structural equation: }&amp;&amp; \mathbf{B}\epsilon_t &amp;= u_t\\[1ex]
+\text{structural shocks: }&amp;&amp; u_t |Y_{t-1} &amp;\sim N_N\left(\mathbf{0}_N,\mathbf{I}_N\right)
+\end{align}\]</span></p>
+<div class="fragment">
+<!-- -->
+<h3 id="notation.">Notation.</h3>
+<ul>
+<li><p><span class="math inline">\(\mathbf{B}\)</span> - <span class="math inline">\(N\times N\)</span> structural matrix of contemporaneous relationships</p></li>
+<li><p><span class="math inline">\(u_t\)</span> - <span class="math inline">\(N\)</span>-vector of structural shocks at time <span class="math inline">\(t\)</span></p>
+<p>Isolating these shocks allows us to <em>identify dynamic effects of uncorrelated shocks</em> on variables <span class="math inline">\(y_t\)</span></p></li>
+<li><p><span class="math inline">\(\epsilon_t\)</span> - <span class="math inline">\(N\)</span>-vector with VAR errors at time <span class="math inline">\(t\)</span></p></li>
+<li><p>the rest as in <a href="https://bayesian-econometrics-2023.github.io/be23-lecture7/#/varp-model">Lecture 7: Bayesian VARs</a></p></li>
+</ul>
+</div>
+</section>
+<section id="structural-vector-autoregressions-4" class="slide level2">
+<h2>Structural Vector Autoregressions</h2>
+<div class="footer">
+<p><a href="https://bayesian-econometrics-2023.github.io/be23-lecture8/">Bayesian Structural VARs</a></p>
+</div>
+<h3 id="the-var-errors.">The VAR errors.</h3>
+<p><span class="math display">\[\begin{align}
+&amp;&amp;&amp;\\
+\text{structural equation: }&amp;&amp; \epsilon_t &amp;= \mathbf{B}^{-1}u_t\\[1ex]
+\text{structural shocks: }&amp;&amp; \epsilon_t |Y_{t-1} &amp;\sim N_N\left(\mathbf{0}_N,\Sigma\right)\\[1ex]
+\text{covariance: }&amp;&amp; \mathbf\Sigma &amp;= \mathbf{B}^{-1}\mathbf{B}^{-1\prime} = \Theta_0\Theta_0'
+\end{align}\]</span></p>
+<h3 id="notation.-1">Notation.</h3>
+<ul>
+<li><span class="math inline">\(\mathbf\Sigma\)</span> - <span class="math inline">\(N\times N\)</span> covariance matrix of VAR errors</li>
+<li><span class="math inline">\(\Theta_0 = \mathbf{B}^{-1}\)</span> - <span class="math inline">\(N\times N\)</span> matrix of <strong>contemporaneous effects</strong></li>
+</ul>
+</section>
+<section id="structural-vector-autoregressions-5" class="slide level2">
+<h2>Structural Vector Autoregressions</h2>
+<div class="footer">
+<p><a href="https://bayesian-econometrics-2023.github.io/be23-lecture8/">Bayesian Structural VARs</a></p>
+</div>
+<p>Plug the <em>VAR equation</em> into the <em>structural equation</em> to obtain:</p>
+<p><span class="math display">\[\begin{align}
+\mathbf{B}y_t &amp;= \mathbf{B}\mathbf{A}_1 y_{t-1} + \dots + \mathbf{B}\mathbf{A}_p y_{t-p} + \mathbf{B}\boldsymbol\mu_0 + u_t\\[1ex]
+&amp;\\
+\end{align}\]</span></p>
+<h3 id="contemporaneous-relationships.">Contemporaneous relationships.</h3>
+<p>Let <span class="math inline">\(N=2\)</span></p>
+<p><span class="math display">\[\begin{align}
+\mathbf{B}y_t &amp;= \begin{bmatrix}B_{11}&amp;B_{12}\\B_{21}&amp;B_{22}\end{bmatrix}\begin{bmatrix}y_{1t}\\y_{2t}\end{bmatrix}
+\end{align}\]</span></p>
+</section>
+<section id="structural-vector-autoregressions-6" class="slide level2">
+<h2>Structural Vector Autoregressions</h2>
+<div class="footer">
+<p><a href="https://bayesian-econometrics-2023.github.io/be23-lecture8/">Bayesian Structural VARs</a></p>
+</div>
+<p>Plug the <em>structural equation</em> for <span class="math inline">\(\epsilon_t\)</span> into the <em>VAR equation</em> to obtain:</p>
+<p><span class="math display">\[\begin{align}
+y_t &amp;= \mathbf{A}_1 y_{t-1} + \dots + \mathbf{A}_p y_{t-p} + \boldsymbol\mu_0 + \mathbf{B}^{-1}u_t\\[1ex]
+y_t &amp;= \mathbf{A}_1 y_{t-1} + \dots + \mathbf{A}_p y_{t-p} + \boldsymbol\mu_0 + \mathbf{\Theta}_0 u_t
+\end{align}\]</span></p>
+<h3 id="contemporaneous-effects.">Contemporaneous effects.</h3>
+<p>Let <span class="math inline">\(N=2\)</span></p>
+<p><span class="math display">\[\begin{align}
+\begin{bmatrix}y_{1t}\\y_{2t}\end{bmatrix} &amp;= \dots +
+\begin{bmatrix}\Theta_{11}&amp;\Theta_{12}\\\Theta_{21}&amp;\Theta_{22}\end{bmatrix}\begin{bmatrix}u_{1t}\\ u_{2t}\end{bmatrix}
+\end{align}\]</span></p>
+<h3 id="task.">Task.</h3>
+<p>What is the contemporaneous effect of the first shock on the second variable?</p>
+</section>
+<section id="identification-of-structural-vars-1" class="slide level2" data-background-color="#9933FF">
+<h2>Identification of Structural VARs</h2>
+</section>
+<section id="identification-of-structural-vars-simplified" class="slide level2">
+<h2>Identification of Structural VARs Simplified</h2>
+<div class="footer">
+<p><a href="https://bayesian-econometrics-2023.github.io/be23-lecture8/">Bayesian Structural VARs</a></p>
+</div>
+<h3 id="covariance-and-structural-relationships.">Covariance and structural relationships.</h3>
+<p><span class="math display">\[\begin{align}
+&amp;\\
+\mathbf\Sigma &amp;= \mathbf{B}^{-1}\mathbf{B}^{-1\prime}\\[1ex]
+\end{align}\]</span></p>
+<ul>
+<li><span class="math inline">\(\mathbf\Sigma\)</span> can be estimated using data easily</li>
+</ul>
+<div>
+<ul>
+<li class="fragment">The relationship presents a system of equations to be solved for <span class="math inline">\(\mathbf{B}\)</span></li>
+<li class="fragment"><span class="math inline">\(\mathbf\Sigma\)</span> is a <em>symmetric</em> <span class="math inline">\(N\times N\)</span> matrix</li>
+<li class="fragment"><span class="math inline">\(\mathbf\Sigma\)</span> has <span class="math inline">\(N(N+1)/2\)</span> unique elements given equations</li>
+<li class="fragment"><span class="math inline">\(\mathbf{B}\)</span> is an <span class="math inline">\(N\times N\)</span> matrix with <span class="math inline">\(N^2\)</span> unique elements to estimate</li>
+<li class="fragment">We cannot estimate all elements of <span class="math inline">\(\mathbf{B}\)</span> using <span class="math inline">\(N(N+1)/2\)</span> equations</li>
+<li class="fragment"><span class="math inline">\(\mathbf{B}\)</span> is <text style="color:#9933FF;"><strong>not identified</strong>
+<p></p></text></li>
+</ul>
+</div>
+</section>
+<section id="identification-of-structural-vars-simplified-1" class="slide level2">
+<h2>Identification of Structural VARs Simplified</h2>
+<div class="footer">
+<p><a href="https://bayesian-econometrics-2023.github.io/be23-lecture8/">Bayesian Structural VARs</a></p>
+</div>
+<h3 id="covariance-and-structural-relationships.-1">Covariance and structural relationships.</h3>
+<p><span class="math display">\[\begin{align}
+&amp;\\
+\mathbf\Sigma &amp;= \mathbf{B}^{-1}\mathbf{B}^{-1\prime}\\[1ex]
+\end{align}\]</span></p>
+<h3 id="identification.">Identification.</h3>
+<ul>
+<li>Only <span class="math inline">\(N(N+1)/2\)</span> elements in <span class="math inline">\(\mathbf{B}\)</span> can be estimated</li>
+<li>Impose <span class="math inline">\(N(N-1)/2\)</span> restrictions on <span class="math inline">\(\mathbf{B}\)</span> to solve the equation</li>
+<li>This identifies the rows of <span class="math inline">\(\mathbf{B}\)</span> (and the columns of <span class="math inline">\(\mathbf\Theta_0\)</span>) up to a sign</li>
+<li>Change the sign of any number of <span class="math inline">\(\mathbf{B}\)</span> rows and <span class="math inline">\(\mathbf\Sigma\)</span> will not change</li>
+<li>Often <span class="math inline">\(\mathbf{B}\)</span> is made lower-triangular</li>
+</ul>
+</section>
+<section id="identification-of-structural-vars-simplified-2" class="slide level2">
+<h2>Identification of Structural VARs Simplified</h2>
+<div class="footer">
+<p><a href="https://bayesian-econometrics-2023.github.io/be23-lecture8/">Bayesian Structural VARs</a></p>
+</div>
+<h3 id="covariance-and-structural-relationships.-2">Covariance and structural relationships.</h3>
+<p>Let <span class="math inline">\(N=2\)</span></p>
+<p><span class="math display">\[\begin{align}
+\begin{bmatrix}\sigma_1^2&amp;\sigma_{12}\\ \sigma_{12}&amp;\sigma_2^2\end{bmatrix} &amp;\qquad
+\begin{bmatrix}B_{11}&amp;B_{12}\\ B_{21}&amp;B_{22}\end{bmatrix}\\[1ex]
+\end{align}\]</span></p>
+<ul>
+<li>3 unique elements in <span class="math inline">\(\mathbf\Sigma\)</span> - 3 equations in the system</li>
+<li>4 elements in <span class="math inline">\(\mathbf{B}\)</span> cannot be estimated</li>
+</ul>
+<h3 id="identification.-1">Identification.</h3>
+<p><span class="math display">\[\begin{align}
+\begin{bmatrix}\sigma_1^2&amp;\sigma_{12}\\ \sigma_{12}&amp;\sigma_2^2\end{bmatrix} &amp;\qquad
+\begin{bmatrix}B_{11}&amp; 0\\ B_{21}&amp;B_{22}\end{bmatrix}\\[1ex]
+\end{align}\]</span></p>
+<ul>
+<li>3 equations identify 3 elements in <span class="math inline">\(\mathbf{B}\)</span></li>
+</ul>
+</section>
+<section id="identification-of-monetary-policy-shock" class="slide level2">
+<h2>Identification of Monetary Policy Shock</h2>
+<div class="footer">
+<p><a href="https://bayesian-econometrics-2023.github.io/be23-lecture8/">Bayesian Structural VARs</a></p>
+</div>
+<p>Consider a system of four variables:</p>
+<p><span class="math display">\[\begin{align}
+y_t = \begin{bmatrix} \Delta rgdp_t &amp; \pi_t &amp; cr_t &amp; \Delta rtwi_t \end{bmatrix}'
+\end{align}\]</span></p>
+<ul>
+<li><span class="math inline">\(\Delta rgdp_t\)</span> - real Gross Domestic Product growth</li>
+<li><span class="math inline">\(\pi_t\)</span> - Consumer Price Index inflation</li>
+<li><span class="math inline">\(cr_t\)</span> - Cash Rate Target - Australian nominal interest rate</li>
+<li><span class="math inline">\(\Delta rtwi_t\)</span> - real Trade-Weighted Index rate of return (exchange rate)</li>
+</ul>
+<h3 id="identified-system.">Identified system.</h3>
+<p>A lower-triangular matrix identifies:</p>
+<ul>
+<li>contemporaneous relationships <span class="math inline">\(\mathbf{B}\)</span></li>
+<li>contemporaneous effects <span class="math inline">\(\mathbf\Theta_0\)</span></li>
+<li>structural shocks <span class="math inline">\(u_t\)</span></li>
+</ul>
+</section>
+<section id="identification-of-monetary-policy-shock-1" class="slide level2">
+<h2>Identification of Monetary Policy Shock</h2>
+<div class="footer">
+<p><a href="https://bayesian-econometrics-2023.github.io/be23-lecture8/">Bayesian Structural VARs</a></p>
+</div>
+<h3 id="identified-system.-1">Identified system.</h3>
+<p><span class="math display">\[\begin{align}
+\begin{bmatrix}
+B_{11}&amp;0&amp;0&amp;0\\
+B_{21}&amp;B_{22}&amp;0&amp;0\\
+B_{31}&amp;B_{32}&amp;B_{33}&amp;0\\
+B_{41}&amp;B_{42}&amp;B_{43}&amp;B_{44}
+\end{bmatrix}
+\begin{bmatrix} \Delta rgdp_t \\ \pi_t \\ cr_t \\ \Delta rtwi_t \end{bmatrix} &amp;= \dots +
+\begin{bmatrix} u_t^{ad} \\ u_t^{as} \\ u_t^{mps} \\ u_t^{ex} \end{bmatrix}
+\end{align}\]</span></p>
+<h3 id="identified-shocks.">Identified shocks.</h3>
+<p><span class="math inline">\(u_t^{ad}\)</span> - aggregate demand shock is exogenous to the rest of the system</p>
+<p><span class="math inline">\(u_t^{as}\)</span> - aggregate supply shock</p>
+<p><span class="math inline">\(u_t^{mps}\)</span> - monetary policy shock identified via Taylor’s Rule</p>
+<p><span class="math inline">\(u_t^{ex}\)</span> - currency shock</p>
+</section>
+<section id="identification-of-monetary-policy-shock-2" class="slide level2">
+<h2>Identification of Monetary Policy Shock</h2>
+<div class="footer">
+<p><a href="https://bayesian-econometrics-2023.github.io/be23-lecture8/">Bayesian Structural VARs</a></p>
+</div>
+<h3 id="identified-system.-2">Identified system.</h3>
+<p><span class="math display">\[\begin{align}
+\begin{bmatrix}
+B_{11}&amp;0&amp;0&amp;0\\
+B_{21}&amp;B_{22}&amp;0&amp;0\\
+B_{31}&amp;B_{32}&amp;B_{33}&amp;0\\
+B_{41}&amp;B_{42}&amp;B_{43}&amp;B_{44}
+\end{bmatrix}
+\begin{bmatrix} \Delta rgdp_t \\ \pi_t \\ cr_t \\ \Delta rtwi_t \end{bmatrix} &amp;= \dots +
+\begin{bmatrix} u_t^{ad} \\ u_t^{as} \\ u_t^{mps} \\ u_t^{ex} \end{bmatrix}
+\end{align}\]</span></p>
+<h3 id="tasks.">Tasks.</h3>
+<ul>
+<li>Write out the third equation for the cash rate.</li>
+<li>Let <span class="math inline">\(B_{33}&gt;0\)</span>. What values of <span class="math inline">\(B_{31}\)</span> and <span class="math inline">\(B_{32}\)</span> does theory imply?</li>
+</ul>
+</section>
+<section id="identification-of-monetary-policy-shock-3" class="slide level2">
+<h2>Identification of Monetary Policy Shock</h2>
+<div class="footer">
+<p><a href="https://bayesian-econometrics-2023.github.io/be23-lecture8/">Bayesian Structural VARs</a></p>
+</div>
+<h3 id="identified-system.-3">Identified system.</h3>
+<p><span class="math display">\[\begin{align}
+\begin{bmatrix}
+B_{11}&amp;0&amp;0&amp;0\\
+B_{21}&amp;B_{22}&amp;0&amp;0\\
+B_{31}&amp;B_{32}&amp;B_{33}&amp;0\\
+B_{41}&amp;B_{42}&amp;B_{43}&amp;B_{44}
+\end{bmatrix}
+\begin{bmatrix} \Delta rgdp_t \\ \pi_t \\ cr_t \\ \Delta rtwi_t \end{bmatrix} &amp;= \dots +
+\begin{bmatrix} u_t^{ad} \\ u_t^{as} \\ u_t^{mps} \\ u_t^{ex} \end{bmatrix}
+\end{align}\]</span></p>
+<h3 id="monetary-policy-shock.">Monetary policy shock.</h3>
+<ul>
+<li>is uncorrelated with any other shock</li>
+<li>consists of the unanticipated (unpredictable) part of the <em>monetary policy instrument</em>, interest rate</li>
+<li>In this model, the systematic part of the monetary policy consists of:
+<ul>
+<li>contemporaneous relationships with GDP and inflation</li>
+<li>lagged relationships with all variables</li>
+</ul></li>
+</ul>
+</section>
+<section id="dynamic-causal-effects-1" class="slide level2" data-background-color="#9933FF">
+<h2>Dynamic Causal Effects</h2>
+</section>
+<section id="dynamic-causal-effects-2" class="slide level2">
+<h2>Dynamic Causal Effects</h2>
+</section>
+<section id="bayesian-estimation-1" class="slide level2" data-background-color="#9933FF">
+<h2>Bayesian Estimation</h2>
+</section>
+<section id="bayesian-estimation-2" class="slide level2">
+<h2>Bayesian Estimation</h2>
+<div class="footer">
+<p><a href="https://bayesian-econometrics-2023.github.io/be23-lecture8/">Bayesian Structural VARs</a></p>
+</div>
+</section>
+<section id="heteroskedastic-structural-vars-1" class="slide level2" data-background-color="#9933FF">
+<h2>Heteroskedastic Structural VARs</h2>
+</section>
+<section id="heteroskedastic-structural-vars-2" class="slide level2">
+<h2>Heteroskedastic Structural VARs</h2>
+<div class="footer">
+<p><a href="https://bayesian-econometrics-2023.github.io/be23-lecture8/">Bayesian Structural VARs</a></p>
+</div>
+</section>
+<section id="monetary-policy-analysis-using-r-package-bsvars" class="slide level2" data-background-color="#9933FF">
+<h2>Monetary Policy Analysis Using R Package <a href="https://cran.r-project.org/package=bsvars">bsvars</a></h2>
+</section>
+<section id="data-preparation" class="slide level2">
+<h2>Data preparation</h2>
+<div class="cell" data-layout-align="center" data-hash="index_cache/revealjs/data_759b6d56897b589f46f951702b084142">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="co"># Gross domestic product (GDP); Chain volume</span></span>
+<span id="cb1-2"><a href="#cb1-2"></a>rgdp_dwnld      <span class="ot">=</span> readrba<span class="sc">::</span><span class="fu">read_rba</span>(<span class="at">series_id =</span> <span class="st">"GGDPCVGDP"</span>)</span>
+<span id="cb1-3"><a href="#cb1-3"></a>rgdp_tmp        <span class="ot">=</span> xts<span class="sc">::</span><span class="fu">xts</span>(rgdp_dwnld<span class="sc">$</span>value, rgdp_dwnld<span class="sc">$</span>date, <span class="at">tclass =</span> <span class="st">'yearqtr'</span>)</span>
+<span id="cb1-4"><a href="#cb1-4"></a>drgdp           <span class="ot">=</span> <span class="fu">na.omit</span>(<span class="dv">400</span> <span class="sc">*</span> <span class="fu">diff</span>(<span class="fu">log</span>(rgdp_tmp)))</span>
+<span id="cb1-5"><a href="#cb1-5"></a>drgdp           <span class="ot">=</span> xts<span class="sc">::</span><span class="fu">to.quarterly</span>(drgdp, <span class="at">OHLC =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb1-6"><a href="#cb1-6"></a></span>
+<span id="cb1-7"><a href="#cb1-7"></a><span class="co"># Consumer price index; All groups; Quarterly change (in per cent)</span></span>
+<span id="cb1-8"><a href="#cb1-8"></a>picpi_dwnld     <span class="ot">=</span> readrba<span class="sc">::</span><span class="fu">read_rba</span>(<span class="at">series_id =</span> <span class="st">"GCPIAGSAQP"</span>)</span>
+<span id="cb1-9"><a href="#cb1-9"></a>pi              <span class="ot">=</span> <span class="dv">4</span> <span class="sc">*</span> xts<span class="sc">::</span><span class="fu">xts</span>(picpi_dwnld<span class="sc">$</span>value, picpi_dwnld<span class="sc">$</span>date, <span class="at">tclass =</span> <span class="st">'yearqtr'</span>)</span>
+<span id="cb1-10"><a href="#cb1-10"></a>pi              <span class="ot">=</span> xts<span class="sc">::</span><span class="fu">to.quarterly</span>(pi, <span class="at">OHLC =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb1-11"><a href="#cb1-11"></a></span>
+<span id="cb1-12"><a href="#cb1-12"></a><span class="co"># Interbank Overnight Cash Rate</span></span>
+<span id="cb1-13"><a href="#cb1-13"></a>cr_dwnld        <span class="ot">=</span> readrba<span class="sc">::</span><span class="fu">read_rba</span>(<span class="at">series_id =</span> <span class="st">"FIRMMCRID"</span>)   <span class="co"># Cash Rate Target</span></span>
+<span id="cb1-14"><a href="#cb1-14"></a>cr_tmp          <span class="ot">=</span> xts<span class="sc">::</span><span class="fu">xts</span>(cr_dwnld<span class="sc">$</span>value, cr_dwnld<span class="sc">$</span>date)</span>
+<span id="cb1-15"><a href="#cb1-15"></a>cr              <span class="ot">=</span> xts<span class="sc">::</span><span class="fu">to.quarterly</span>(cr_tmp, <span class="at">OHLC =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb1-16"><a href="#cb1-16"></a></span>
+<span id="cb1-17"><a href="#cb1-17"></a><span class="co"># Real Trade-Weighted Index</span></span>
+<span id="cb1-18"><a href="#cb1-18"></a>rtwi_dwnld      <span class="ot">=</span> readrba<span class="sc">::</span><span class="fu">read_rba</span>(<span class="at">series_id =</span> <span class="st">"FRERTWI"</span>)</span>
+<span id="cb1-19"><a href="#cb1-19"></a>rtwi_tmp        <span class="ot">=</span> xts<span class="sc">::</span><span class="fu">xts</span>(rtwi_dwnld<span class="sc">$</span>value, rtwi_dwnld<span class="sc">$</span>date, <span class="at">tclass =</span> <span class="st">'yearqtr'</span>)</span>
+<span id="cb1-20"><a href="#cb1-20"></a>rtwi            <span class="ot">=</span> <span class="dv">100</span> <span class="sc">*</span> <span class="fu">na.omit</span>(<span class="fu">diff</span>(<span class="fu">log</span>(rtwi_tmp)))</span>
+<span id="cb1-21"><a href="#cb1-21"></a>rtwi            <span class="ot">=</span> xts<span class="sc">::</span><span class="fu">to.quarterly</span>(rtwi, <span class="at">OHLC =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb1-22"><a href="#cb1-22"></a></span>
+<span id="cb1-23"><a href="#cb1-23"></a>y               <span class="ot">=</span> <span class="fu">na.omit</span>(<span class="fu">merge</span>(drgdp, pi, cr, rtwi))</span>
+<span id="cb1-24"><a href="#cb1-24"></a><span class="fu">plot</span>(y, <span class="at">main =</span> <span class="st">"Australian monetary system"</span>, </span>
+<span id="cb1-25"><a href="#cb1-25"></a>     <span class="at">legend.loc =</span> <span class="st">"bottomleft"</span>, <span class="at">col =</span> <span class="fu">c</span>(<span class="st">"#FF00FF"</span>,<span class="st">"#990099"</span>,<span class="st">"#9933FF"</span>,<span class="st">"#330033"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+
 <div class="footer">
 <p><a href="https://bayesian-econometrics-2023.github.io/be23-lecture8/">Bayesian Structural VARs</a></p>
 </div>
@@ -381,7 +753,15 @@ by Tomasz Woźniak
 
 </div>
 </section>
-    </div>
+    <section id="data-preparation-output" class="slide level2 output-location-slide"><h2>Data preparation</h2><div class="cell output-location-slide" data-layout-align="center" data-hash="index_cache/revealjs/data_759b6d56897b589f46f951702b084142">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="index_files/figure-revealjs/data-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div></section></div>
   </div>
 
   <script>window.backupDefine = window.define; window.define = undefined;</script>
@@ -595,6 +975,44 @@ by Tomasz Woźniak
         ]
       });
     </script>
+    
+    <script>
+      // htmlwidgets need to know to resize themselves when slides are shown/hidden.
+      // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
+      // slide changes (different for each slide format).
+      (function () {
+        // dispatch for htmlwidgets
+        function fireSlideEnter() {
+          const event = window.document.createEvent("Event");
+          event.initEvent("slideenter", true, true);
+          window.document.dispatchEvent(event);
+        }
+
+        function fireSlideChanged(previousSlide, currentSlide) {
+          fireSlideEnter();
+
+          // dispatch for shiny
+          if (window.jQuery) {
+            if (previousSlide) {
+              window.jQuery(previousSlide).trigger("hidden");
+            }
+            if (currentSlide) {
+              window.jQuery(currentSlide).trigger("shown");
+            }
+          }
+        }
+
+        // hookup for slidy
+        if (window.w3c_slidy) {
+          window.w3c_slidy.add_observer(function (slide_num) {
+            // slide_num starts at position 1
+            fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
+          });
+        }
+
+      })();
+    </script>
+
     <script id="quarto-html-after-body" type="application/javascript">
     window.document.addEventListener("DOMContentLoaded", function (event) {
       const toggleBodyColorMode = (bsSheetEl) => {
