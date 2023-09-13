@@ -808,3 +808,509 @@ plot(y, main = "Australian monetary system",
 :::
 
 
+## Estimation Setup
+
+::: footer
+[Bayesian Structural VARs](https://bayesian-econometrics-2023.github.io/be23-lecture8/)
+:::
+
+```{r}
+
+# setup
+############################################################
+library(bsvars)
+set.seed(123)
+
+N       = ncol(y)
+p       = 9
+S_burn  = 1e4
+S       = 2e4
+thin    = 2
+```
+
+
+
+## Extended Model Identification Setup
+
+::: footer
+[Bayesian Structural VARs](https://bayesian-econometrics-2023.github.io/be23-lecture8/)
+:::
+
+```{r}
+# structural matrix - extended model
+############################################################
+B_LR = matrix(TRUE, N, N)
+B_LR[upper.tri(B_LR)] = FALSE
+B_LR[3,4] = TRUE
+B_LR
+```
+
+
+
+## Alternative Models Estimation
+
+::: footer
+[Bayesian Structural VARs](https://bayesian-econometrics-2023.github.io/be23-lecture8/)
+:::
+
+### Lower-triangular model with zero prior mean for $\mathbf{A}$.
+
+```{r}
+#| eval: false
+# estimation - lower-triangular model
+############################################################
+spec_bsvar0     = specify_bsvar$new(as.matrix(y), p = p, stationary = rep(TRUE, N))
+spec_bsvar0 |> 
+  estimate(S = S_burn) |> 
+  estimate(S = S, thin = thin) -> soe_bsvar0
+```
+
+
+
+
+## Alternative Models Estimation
+
+::: footer
+[Bayesian Structural VARs](https://bayesian-econometrics-2023.github.io/be23-lecture8/)
+:::
+
+### Lower-triangular model with MLE prior mean for $\mathbf{A}$.
+
+```{r}
+#| code-line-numbers: "5-9"
+#| eval: false
+
+# estimation - lower-triangular model - MLE prior for A
+############################################################
+spec_bsvar      = specify_bsvar$new(as.matrix(y), p = p, stationary = rep(TRUE, N))
+
+A_mle           = t(solve(
+  tcrossprod(spec_bsvar$data_matrices$X), 
+  tcrossprod(spec_bsvar$data_matrices$X, spec_bsvar$data_matrices$Y)
+))
+spec_bsvar$prior$A = A_mle
+
+spec_bsvar |> 
+  estimate(S = S_burn) |> 
+  estimate(S = S, thin = thin) -> soe_bsvar
+```
+
+
+
+
+
+
+## Alternative Models Estimation
+
+::: footer
+[Bayesian Structural VARs](https://bayesian-econometrics-2023.github.io/be23-lecture8/)
+:::
+
+### Extended model with MLE prior mean for $\mathbf{A}$.
+
+```{r}
+#| code-line-numbers: "3-4"
+#| eval: false
+
+# estimation - extended model - MLE prior for A
+############################################################
+spec_bsvar_lr   = specify_bsvar$new(as.matrix(y), p = p, B = B_LR, stationary = rep(TRUE, N))
+spec_bsvar_lr$prior$A = A_mle
+
+spec_bsvar_lr |> 
+  estimate(S = S_burn) |> 
+  estimate(S = S, thin = thin) -> soe_bsvar_lr
+```
+
+
+
+
+## Alternative Models Estimation
+
+::: footer
+[Bayesian Structural VARs](https://bayesian-econometrics-2023.github.io/be23-lecture8/)
+:::
+
+### Lower-triangular model with Markov-switching heteroskedastisity.
+
+```{r}
+#| code-line-numbers: "3-4"
+#| eval: false
+
+# estimation - lower-triangular MS heteroskedastic model
+############################################################
+spec_bsvar_msh    = specify_bsvar_msh$new(as.matrix(y), p = p, M = 2, stationary = rep(TRUE, N))
+spec_bsvar_msh$prior$A = A_mle
+
+spec_bsvar_msh |> 
+  estimate(S = S_burn) |> 
+  estimate(S = S, thin = thin) -> soe_bsvar_msh
+```
+
+
+
+
+
+
+
+## Alternative Models Estimation
+
+::: footer
+[Bayesian Structural VARs](https://bayesian-econometrics-2023.github.io/be23-lecture8/)
+:::
+
+### Extended model with Markov-switching heteroskedastisity.
+
+```{r}
+#| code-line-numbers: "3"
+#| eval: false
+
+# estimation - extended MS heteroskedastic model
+############################################################
+spec_bsvar_lr_msh = specify_bsvar_msh$new(as.matrix(y), p = p, B = B_LR, M = 2, stationary = rep(TRUE, N))
+spec_bsvar_lr_msh$prior$A = A_mle
+
+spec_bsvar_lr_msh |> 
+  estimate(S = S_burn) |> 
+  estimate(S = S, thin = thin) -> soe_bsvar_lr_msh
+```
+
+
+
+
+## Alternative Models Estimation
+
+::: footer
+[Bayesian Structural VARs](https://bayesian-econometrics-2023.github.io/be23-lecture8/)
+:::
+
+### Lower-triangular model with Stochastic Volatility heteroskedastisity.
+
+```{r}
+#| code-line-numbers: "3"
+#| eval: false
+
+# estimation - lower-triangular SV heteroskedastic model
+############################################################
+spec_bsvar_sv = specify_bsvar_sv$new(as.matrix(y), p = p, stationary = rep(TRUE, N))
+spec_bsvar_sv$prior$A = A_mle
+
+spec_bsvar_sv |>
+  estimate(S = S_burn) |> 
+  estimate(S = S, thin = thin) -> soe_bsvar_sv
+```
+
+
+
+
+
+## Alternative Models Estimation
+
+::: footer
+[Bayesian Structural VARs](https://bayesian-econometrics-2023.github.io/be23-lecture8/)
+:::
+
+### Extended model with Stochastic Volatility heteroskedastisity.
+
+```{r}
+#| code-line-numbers: "3"
+#| eval: false
+
+# estimation - extended SV heteroskedastic model
+############################################################
+spec_bsvar_lr_sv = specify_bsvar_sv$new(as.matrix(y), p = p, B = B_LR, stationary = rep(TRUE, N))
+spec_bsvar_lr_sv$prior$A = A_mle
+
+spec_bsvar_lr_sv |>
+  estimate(S = S_burn) |> 
+  estimate(S = S, thin = thin) -> soe_bsvar_lr_sv
+
+```
+
+```{r}
+#| echo: false
+#| cache: true
+load("soe_bsvar.rda")
+```
+
+
+
+
+
+## IRFs: Compute impulse responses
+
+::: footer
+[Bayesian Structural VARs](https://bayesian-econometrics-2023.github.io/be23-lecture8/)
+:::
+
+```{r}
+#| cache: true
+ir_bsvar0       = compute_impulse_responses(soe_bsvar0, horizon = 20)
+ir_bsvar0[,3,,] = 0.25 * ir_bsvar0[,3,,] / mean(ir_bsvar0[3,3,1,])
+
+ir_bsvar        = compute_impulse_responses(soe_bsvar, horizon = 20)
+ir_bsvar[,3,,]  = 0.25 * ir_bsvar[,3,,] / mean(ir_bsvar[3,3,1,])
+
+ir_bsvar_lr        = compute_impulse_responses(soe_bsvar_lr, horizon = 20)
+ir_bsvar_lr[,3,,]  = 0.25 * ir_bsvar_lr[,3,,] / mean(ir_bsvar_lr[3,3,1,])
+
+ir_bsvar_msh        = compute_impulse_responses(soe_bsvar_msh, horizon = 20)
+ir_bsvar_msh[,3,,]  = 0.25 * ir_bsvar_msh[,3,,] / mean(ir_bsvar_msh[3,3,1,])
+
+ir_bsvar_lr_msh        = compute_impulse_responses(soe_bsvar_lr_msh, horizon = 20)
+ir_bsvar_lr_msh[,3,,]  = 0.25 * ir_bsvar_lr_msh[,3,,] / mean(ir_bsvar_lr_msh[3,3,1,])
+
+ir_bsvar_sv        = compute_impulse_responses(soe_bsvar_sv, horizon = 20)
+ir_bsvar_sv[,3,,]  = 0.25 * ir_bsvar_sv[,3,,] / mean(ir_bsvar_sv[3,3,1,])
+
+ir_bsvar_lr_sv        = compute_impulse_responses(soe_bsvar_lr_sv, horizon = 20)
+ir_bsvar_lr_sv[,3,,]  = 0.25 * ir_bsvar_lr_sv[,3,,] / mean(ir_bsvar_lr_sv[3,3,1,])
+
+```
+
+
+
+## IRFs: Zero vs. MLE prior mean
+
+::: footer
+[Bayesian Structural VARs](https://bayesian-econometrics-2023.github.io/be23-lecture8/)
+:::
+
+```{r}
+#| echo: false
+#| fig-align: "center"
+#| fig-height: 8
+
+par(mfrow = c(4,2))
+for (n in 1:4) {
+  bsvarTVPs::ribbon_plot(
+    ir_bsvar0[n,3,,],
+    main = paste("Response of",colnames(y)[n],"to the mps"),
+    ylab = colnames(y)[n],
+    xlab = "horizon [quarters]",
+    bty  = "n",
+    col = "#9933FF"
+  )
+  abline(h = 0)
+  bsvarTVPs::ribbon_plot(
+    ir_bsvar[n,3,,],
+    main = paste("Response of",colnames(y)[n],"to the mps"),
+    ylab = colnames(y)[n],
+    xlab = "horizon [quarters]",
+    bty  = "n",
+    col = "#9933FF"
+  )
+  abline(h = 0)
+}
+```
+
+
+
+## IRFs: Recursive vs. Extended (homosk)
+
+::: footer
+[Bayesian Structural VARs](https://bayesian-econometrics-2023.github.io/be23-lecture8/)
+:::
+
+```{r}
+#| echo: false
+#| fig-align: "center"
+#| fig-height: 8
+
+par(mfrow = c(4,2))
+for (n in 1:4) {
+  bsvarTVPs::ribbon_plot(
+    ir_bsvar[n,3,,],
+    main = paste("Response of",colnames(y)[n],"to the mps"),
+    ylab = colnames(y)[n],
+    xlab = "horizon [quarters]",
+    bty  = "n",
+    col = "#9933FF"
+  )
+  abline(h = 0)
+  bsvarTVPs::ribbon_plot(
+    ir_bsvar_lr[n,3,,],
+    main = paste("Response of",colnames(y)[n],"to the mps"),
+    ylab = colnames(y)[n],
+    xlab = "horizon [quarters]",
+    bty  = "n",
+    col = "#9933FF"
+  )
+  abline(h = 0)
+}
+```
+
+
+## IRFs: Homosk vs. MSH vs. SV (Recursive)
+
+::: footer
+[Bayesian Structural VARs](https://bayesian-econometrics-2023.github.io/be23-lecture8/)
+:::
+
+```{r}
+#| echo: false
+#| fig-align: "center"
+#| fig-height: 7
+
+par(mfrow = c(4,3))
+for (n in 1:4) {
+  bsvarTVPs::ribbon_plot(
+    ir_bsvar[n,3,,],
+    main = paste("Response of",colnames(y)[n],"to the mps"),
+    ylab = colnames(y)[n],
+    xlab = "horizon [quarters]",
+    bty  = "n",
+    col = "#9933FF"
+  )
+  abline(h = 0)
+  bsvarTVPs::ribbon_plot(
+    ir_bsvar_msh[n,3,,],
+    main = paste("Response of",colnames(y)[n],"to the mps"),
+    ylab = colnames(y)[n],
+    xlab = "horizon [quarters]",
+    bty  = "n",
+    col = "#9933FF"
+  )
+  abline(h = 0)
+  bsvarTVPs::ribbon_plot(
+    ir_bsvar_sv[n,3,,],
+    main = paste("Response of",colnames(y)[n],"to the mps"),
+    ylab = colnames(y)[n],
+    xlab = "horizon [quarters]",
+    bty  = "n",
+    col = "#9933FF"
+  )
+  abline(h = 0)
+}
+```
+
+
+## IRFs: Homosk vs. MSH vs. SV (Extended)
+
+::: footer
+[Bayesian Structural VARs](https://bayesian-econometrics-2023.github.io/be23-lecture8/)
+:::
+
+```{r}
+#| echo: false
+#| fig-align: "center"
+#| fig-height: 7
+
+par(mfrow = c(4,3))
+for (n in 1:4) {
+  bsvarTVPs::ribbon_plot(
+    ir_bsvar_lr[n,3,,],
+    main = paste("Response of",colnames(y)[n],"to the mps"),
+    ylab = colnames(y)[n],
+    xlab = "horizon [quarters]",
+    bty  = "n",
+    col = "#9933FF"
+  )
+  abline(h = 0)
+  bsvarTVPs::ribbon_plot(
+    ir_bsvar_lr_msh[n,3,,],
+    main = paste("Response of",colnames(y)[n],"to the mps"),
+    ylab = colnames(y)[n],
+    xlab = "horizon [quarters]",
+    bty  = "n",
+    col = "#9933FF"
+  )
+  abline(h = 0)
+  bsvarTVPs::ribbon_plot(
+    ir_bsvar_lr_sv[n,3,,],
+    main = paste("Response of",colnames(y)[n],"to the mps"),
+    ylab = colnames(y)[n],
+    xlab = "horizon [quarters]",
+    bty  = "n",
+    col = "#9933FF"
+  )
+  abline(h = 0)
+}
+```
+
+
+
+
+## Standard Deviations (Recursive)
+
+::: footer
+[Bayesian Structural VARs](https://bayesian-econometrics-2023.github.io/be23-lecture8/)
+:::
+
+```{r}
+#| echo: false
+#| fig-align: "center"
+#| fig-height: 7
+
+sd_msh  = compute_conditional_sd(soe_bsvar_msh)
+sd_sv   = compute_conditional_sd(soe_bsvar_sv)
+
+par(mfrow = c(4,2))
+for (n in 1:4) {
+  bsvarTVPs::ribbon_plot(
+    sd_msh[n,,],
+    main = paste("SD of",colnames(y)[n]),
+    ylab = colnames(y)[n],
+    xlab = "time",
+    bty  = "n",
+    col = "#9933FF"
+  )
+  abline(h = 1)
+  bsvarTVPs::ribbon_plot(
+    sd_sv[n,,],
+    main = paste("SD of",colnames(y)[n]),
+    ylab = colnames(y)[n],
+    xlab = "time",
+    bty  = "n",
+    col = "#9933FF"
+  )
+  abline(h = 1)
+}
+```
+
+
+
+
+## Standard Deviations (Extended)
+
+::: footer
+[Bayesian Structural VARs](https://bayesian-econometrics-2023.github.io/be23-lecture8/)
+:::
+
+```{r}
+#| echo: false
+#| fig-align: "center"
+#| fig-height: 7
+
+sd_msh  = compute_conditional_sd(soe_bsvar_lr_msh)
+sd_sv   = compute_conditional_sd(soe_bsvar_lr_sv)
+
+par(mfrow = c(4,2))
+for (n in 1:4) {
+  bsvarTVPs::ribbon_plot(
+    sd_msh[n,,],
+    main = paste("SD of",colnames(y)[n]),
+    ylab = colnames(y)[n],
+    xlab = "time",
+    bty  = "n",
+    col = "#9933FF"
+  )
+  abline(h = 1)
+  bsvarTVPs::ribbon_plot(
+    sd_sv[n,,],
+    main = paste("SD of",colnames(y)[n]),
+    ylab = colnames(y)[n],
+    xlab = "time",
+    bty  = "n",
+    col = "#9933FF"
+  )
+  abline(h = 1)
+}
+```
+
+
+
+
+
+
+## [bsvars:](https://cran.r-project.org/package=bsvars) Bayesian Estimation of Structural Vector Autoregressive Models {background-color="#9933FF"}

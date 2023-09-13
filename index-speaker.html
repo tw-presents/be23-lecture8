@@ -1019,11 +1019,8 @@ B_{41}&amp;B_{42}&amp;B_{43}&amp;B_{44}
 <div class="footer">
 <p><a href="https://bayesian-econometrics-2023.github.io/be23-lecture8/">Bayesian Structural VARs</a></p>
 </div>
-<div class="footer footer-default">
-
-</div>
 </section>
-    <section id="data-preparation-output" class="slide level2 output-location-slide"><h2>Data preparation</h2><div class="cell output-location-slide" data-layout-align="center" data-hash="index_cache/revealjs/data_7bf79ad4964356564d1cb4eddc351a9e">
+<section id="data-preparation-output" class="slide level2 output-location-slide"><h2>Data preparation</h2><div class="cell output-location-slide" data-layout-align="center" data-hash="index_cache/revealjs/data_7bf79ad4964356564d1cb4eddc351a9e">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
@@ -1031,7 +1028,244 @@ B_{41}&amp;B_{42}&amp;B_{43}&amp;B_{44}
 </figure>
 </div>
 </div>
-</div></section></div>
+</div></section><section id="estimation-setup" class="slide level2">
+<h2>Estimation Setup</h2>
+<div class="footer">
+<p><a href="https://bayesian-econometrics-2023.github.io/be23-lecture8/">Bayesian Structural VARs</a></p>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="co"># setup</span></span>
+<span id="cb3-2"><a href="#cb3-2"></a><span class="do">############################################################</span></span>
+<span id="cb3-3"><a href="#cb3-3"></a><span class="fu">library</span>(bsvars)</span>
+<span id="cb3-4"><a href="#cb3-4"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb3-5"><a href="#cb3-5"></a></span>
+<span id="cb3-6"><a href="#cb3-6"></a>N       <span class="ot">=</span> <span class="fu">ncol</span>(y)</span>
+<span id="cb3-7"><a href="#cb3-7"></a>p       <span class="ot">=</span> <span class="dv">9</span></span>
+<span id="cb3-8"><a href="#cb3-8"></a>S_burn  <span class="ot">=</span> <span class="fl">1e4</span></span>
+<span id="cb3-9"><a href="#cb3-9"></a>S       <span class="ot">=</span> <span class="fl">2e4</span></span>
+<span id="cb3-10"><a href="#cb3-10"></a>thin    <span class="ot">=</span> <span class="dv">2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="extended-model-identification-setup" class="slide level2">
+<h2>Extended Model Identification Setup</h2>
+<div class="footer">
+<p><a href="https://bayesian-econometrics-2023.github.io/be23-lecture8/">Bayesian Structural VARs</a></p>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="co"># structural matrix - extended model</span></span>
+<span id="cb4-2"><a href="#cb4-2"></a><span class="do">############################################################</span></span>
+<span id="cb4-3"><a href="#cb4-3"></a>B_LR <span class="ot">=</span> <span class="fu">matrix</span>(<span class="cn">TRUE</span>, N, N)</span>
+<span id="cb4-4"><a href="#cb4-4"></a>B_LR[<span class="fu">upper.tri</span>(B_LR)] <span class="ot">=</span> <span class="cn">FALSE</span></span>
+<span id="cb4-5"><a href="#cb4-5"></a>B_LR[<span class="dv">3</span>,<span class="dv">4</span>] <span class="ot">=</span> <span class="cn">TRUE</span></span>
+<span id="cb4-6"><a href="#cb4-6"></a>B_LR</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     [,1]  [,2]  [,3]  [,4]
+[1,] TRUE FALSE FALSE FALSE
+[2,] TRUE  TRUE FALSE FALSE
+[3,] TRUE  TRUE  TRUE  TRUE
+[4,] TRUE  TRUE  TRUE  TRUE</code></pre>
+</div>
+</div>
+</section>
+<section id="alternative-models-estimation" class="slide level2">
+<h2>Alternative Models Estimation</h2>
+<div class="footer">
+<p><a href="https://bayesian-econometrics-2023.github.io/be23-lecture8/">Bayesian Structural VARs</a></p>
+</div>
+<h3 id="lower-triangular-model-with-zero-prior-mean-for-mathbfa.">Lower-triangular model with zero prior mean for <span class="math inline">\(\mathbf{A}\)</span>.</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="co"># estimation - lower-triangular model</span></span>
+<span id="cb6-2"><a href="#cb6-2"></a><span class="do">############################################################</span></span>
+<span id="cb6-3"><a href="#cb6-3"></a>spec_bsvar0     <span class="ot">=</span> specify_bsvar<span class="sc">$</span><span class="fu">new</span>(<span class="fu">as.matrix</span>(y), <span class="at">p =</span> p, <span class="at">stationary =</span> <span class="fu">rep</span>(<span class="cn">TRUE</span>, N))</span>
+<span id="cb6-4"><a href="#cb6-4"></a>spec_bsvar0 <span class="sc">|&gt;</span> </span>
+<span id="cb6-5"><a href="#cb6-5"></a>  <span class="fu">estimate</span>(<span class="at">S =</span> S_burn) <span class="sc">|&gt;</span> </span>
+<span id="cb6-6"><a href="#cb6-6"></a>  <span class="fu">estimate</span>(<span class="at">S =</span> S, <span class="at">thin =</span> thin) <span class="ot">-&gt;</span> soe_bsvar0</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="alternative-models-estimation-1" class="slide level2">
+<h2>Alternative Models Estimation</h2>
+<div class="footer">
+<p><a href="https://bayesian-econometrics-2023.github.io/be23-lecture8/">Bayesian Structural VARs</a></p>
+</div>
+<h3 id="lower-triangular-model-with-mle-prior-mean-for-mathbfa.">Lower-triangular model with MLE prior mean for <span class="math inline">\(\mathbf{A}\)</span>.</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7" data-code-line-numbers="5-9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="co"># estimation - lower-triangular model - MLE prior for A</span></span>
+<span id="cb7-2"><a href="#cb7-2"></a><span class="do">############################################################</span></span>
+<span id="cb7-3"><a href="#cb7-3"></a>spec_bsvar      <span class="ot">=</span> specify_bsvar<span class="sc">$</span><span class="fu">new</span>(<span class="fu">as.matrix</span>(y), <span class="at">p =</span> p, <span class="at">stationary =</span> <span class="fu">rep</span>(<span class="cn">TRUE</span>, N))</span>
+<span id="cb7-4"><a href="#cb7-4"></a></span>
+<span id="cb7-5"><a href="#cb7-5"></a>A_mle           <span class="ot">=</span> <span class="fu">t</span>(<span class="fu">solve</span>(</span>
+<span id="cb7-6"><a href="#cb7-6"></a>  <span class="fu">tcrossprod</span>(spec_bsvar<span class="sc">$</span>data_matrices<span class="sc">$</span>X), </span>
+<span id="cb7-7"><a href="#cb7-7"></a>  <span class="fu">tcrossprod</span>(spec_bsvar<span class="sc">$</span>data_matrices<span class="sc">$</span>X, spec_bsvar<span class="sc">$</span>data_matrices<span class="sc">$</span>Y)</span>
+<span id="cb7-8"><a href="#cb7-8"></a>))</span>
+<span id="cb7-9"><a href="#cb7-9"></a>spec_bsvar<span class="sc">$</span>prior<span class="sc">$</span>A <span class="ot">=</span> A_mle</span>
+<span id="cb7-10"><a href="#cb7-10"></a></span>
+<span id="cb7-11"><a href="#cb7-11"></a>spec_bsvar <span class="sc">|&gt;</span> </span>
+<span id="cb7-12"><a href="#cb7-12"></a>  <span class="fu">estimate</span>(<span class="at">S =</span> S_burn) <span class="sc">|&gt;</span> </span>
+<span id="cb7-13"><a href="#cb7-13"></a>  <span class="fu">estimate</span>(<span class="at">S =</span> S, <span class="at">thin =</span> thin) <span class="ot">-&gt;</span> soe_bsvar</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="alternative-models-estimation-2" class="slide level2">
+<h2>Alternative Models Estimation</h2>
+<div class="footer">
+<p><a href="https://bayesian-econometrics-2023.github.io/be23-lecture8/">Bayesian Structural VARs</a></p>
+</div>
+<h3 id="extended-model-with-mle-prior-mean-for-mathbfa.">Extended model with MLE prior mean for <span class="math inline">\(\mathbf{A}\)</span>.</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8" data-code-line-numbers="3-4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a><span class="co"># estimation - extended model - MLE prior for A</span></span>
+<span id="cb8-2"><a href="#cb8-2"></a><span class="do">############################################################</span></span>
+<span id="cb8-3"><a href="#cb8-3"></a>spec_bsvar_lr   <span class="ot">=</span> specify_bsvar<span class="sc">$</span><span class="fu">new</span>(<span class="fu">as.matrix</span>(y), <span class="at">p =</span> p, <span class="at">B =</span> B_LR, <span class="at">stationary =</span> <span class="fu">rep</span>(<span class="cn">TRUE</span>, N))</span>
+<span id="cb8-4"><a href="#cb8-4"></a>spec_bsvar_lr<span class="sc">$</span>prior<span class="sc">$</span>A <span class="ot">=</span> A_mle</span>
+<span id="cb8-5"><a href="#cb8-5"></a></span>
+<span id="cb8-6"><a href="#cb8-6"></a>spec_bsvar_lr <span class="sc">|&gt;</span> </span>
+<span id="cb8-7"><a href="#cb8-7"></a>  <span class="fu">estimate</span>(<span class="at">S =</span> S_burn) <span class="sc">|&gt;</span> </span>
+<span id="cb8-8"><a href="#cb8-8"></a>  <span class="fu">estimate</span>(<span class="at">S =</span> S, <span class="at">thin =</span> thin) <span class="ot">-&gt;</span> soe_bsvar_lr</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="alternative-models-estimation-3" class="slide level2">
+<h2>Alternative Models Estimation</h2>
+<div class="footer">
+<p><a href="https://bayesian-econometrics-2023.github.io/be23-lecture8/">Bayesian Structural VARs</a></p>
+</div>
+<h3 id="lower-triangular-model-with-markov-switching-heteroskedastisity.">Lower-triangular model with Markov-switching heteroskedastisity.</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9" data-code-line-numbers="3-4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a><span class="co"># estimation - lower-triangular MS heteroskedastic model</span></span>
+<span id="cb9-2"><a href="#cb9-2"></a><span class="do">############################################################</span></span>
+<span id="cb9-3"><a href="#cb9-3"></a>spec_bsvar_msh    <span class="ot">=</span> specify_bsvar_msh<span class="sc">$</span><span class="fu">new</span>(<span class="fu">as.matrix</span>(y), <span class="at">p =</span> p, <span class="at">M =</span> <span class="dv">2</span>, <span class="at">stationary =</span> <span class="fu">rep</span>(<span class="cn">TRUE</span>, N))</span>
+<span id="cb9-4"><a href="#cb9-4"></a>spec_bsvar_msh<span class="sc">$</span>prior<span class="sc">$</span>A <span class="ot">=</span> A_mle</span>
+<span id="cb9-5"><a href="#cb9-5"></a></span>
+<span id="cb9-6"><a href="#cb9-6"></a>spec_bsvar_msh <span class="sc">|&gt;</span> </span>
+<span id="cb9-7"><a href="#cb9-7"></a>  <span class="fu">estimate</span>(<span class="at">S =</span> S_burn) <span class="sc">|&gt;</span> </span>
+<span id="cb9-8"><a href="#cb9-8"></a>  <span class="fu">estimate</span>(<span class="at">S =</span> S, <span class="at">thin =</span> thin) <span class="ot">-&gt;</span> soe_bsvar_msh</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="alternative-models-estimation-4" class="slide level2">
+<h2>Alternative Models Estimation</h2>
+<div class="footer">
+<p><a href="https://bayesian-econometrics-2023.github.io/be23-lecture8/">Bayesian Structural VARs</a></p>
+</div>
+<h3 id="extended-model-with-markov-switching-heteroskedastisity.">Extended model with Markov-switching heteroskedastisity.</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10" data-code-line-numbers="3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a><span class="co"># estimation - extended MS heteroskedastic model</span></span>
+<span id="cb10-2"><a href="#cb10-2"></a><span class="do">############################################################</span></span>
+<span id="cb10-3"><a href="#cb10-3"></a>spec_bsvar_lr_msh <span class="ot">=</span> specify_bsvar_msh<span class="sc">$</span><span class="fu">new</span>(<span class="fu">as.matrix</span>(y), <span class="at">p =</span> p, <span class="at">B =</span> B_LR, <span class="at">M =</span> <span class="dv">2</span>, <span class="at">stationary =</span> <span class="fu">rep</span>(<span class="cn">TRUE</span>, N))</span>
+<span id="cb10-4"><a href="#cb10-4"></a>spec_bsvar_lr_msh<span class="sc">$</span>prior<span class="sc">$</span>A <span class="ot">=</span> A_mle</span>
+<span id="cb10-5"><a href="#cb10-5"></a></span>
+<span id="cb10-6"><a href="#cb10-6"></a>spec_bsvar_lr_msh <span class="sc">|&gt;</span> </span>
+<span id="cb10-7"><a href="#cb10-7"></a>  <span class="fu">estimate</span>(<span class="at">S =</span> S_burn) <span class="sc">|&gt;</span> </span>
+<span id="cb10-8"><a href="#cb10-8"></a>  <span class="fu">estimate</span>(<span class="at">S =</span> S, <span class="at">thin =</span> thin) <span class="ot">-&gt;</span> soe_bsvar_lr_msh</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="alternative-models-estimation-5" class="slide level2">
+<h2>Alternative Models Estimation</h2>
+<div class="footer">
+<p><a href="https://bayesian-econometrics-2023.github.io/be23-lecture8/">Bayesian Structural VARs</a></p>
+</div>
+<h3 id="lower-triangular-model-with-stochastic-volatility-heteroskedastisity.">Lower-triangular model with Stochastic Volatility heteroskedastisity.</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11" data-code-line-numbers="3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a><span class="co"># estimation - lower-triangular SV heteroskedastic model</span></span>
+<span id="cb11-2"><a href="#cb11-2"></a><span class="do">############################################################</span></span>
+<span id="cb11-3"><a href="#cb11-3"></a>spec_bsvar_sv <span class="ot">=</span> specify_bsvar_sv<span class="sc">$</span><span class="fu">new</span>(<span class="fu">as.matrix</span>(y), <span class="at">p =</span> p, <span class="at">stationary =</span> <span class="fu">rep</span>(<span class="cn">TRUE</span>, N))</span>
+<span id="cb11-4"><a href="#cb11-4"></a>spec_bsvar_sv<span class="sc">$</span>prior<span class="sc">$</span>A <span class="ot">=</span> A_mle</span>
+<span id="cb11-5"><a href="#cb11-5"></a></span>
+<span id="cb11-6"><a href="#cb11-6"></a>spec_bsvar_sv <span class="sc">|&gt;</span></span>
+<span id="cb11-7"><a href="#cb11-7"></a>  <span class="fu">estimate</span>(<span class="at">S =</span> S_burn) <span class="sc">|&gt;</span> </span>
+<span id="cb11-8"><a href="#cb11-8"></a>  <span class="fu">estimate</span>(<span class="at">S =</span> S, <span class="at">thin =</span> thin) <span class="ot">-&gt;</span> soe_bsvar_sv</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="alternative-models-estimation-6" class="slide level2">
+<h2>Alternative Models Estimation</h2>
+<div class="footer">
+<p><a href="https://bayesian-econometrics-2023.github.io/be23-lecture8/">Bayesian Structural VARs</a></p>
+</div>
+<h3 id="extended-model-with-stochastic-volatility-heteroskedastisity.">Extended model with Stochastic Volatility heteroskedastisity.</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12" data-code-line-numbers="3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a><span class="co"># estimation - extended SV heteroskedastic model</span></span>
+<span id="cb12-2"><a href="#cb12-2"></a><span class="do">############################################################</span></span>
+<span id="cb12-3"><a href="#cb12-3"></a>spec_bsvar_lr_sv <span class="ot">=</span> specify_bsvar_sv<span class="sc">$</span><span class="fu">new</span>(<span class="fu">as.matrix</span>(y), <span class="at">p =</span> p, <span class="at">B =</span> B_LR, <span class="at">stationary =</span> <span class="fu">rep</span>(<span class="cn">TRUE</span>, N))</span>
+<span id="cb12-4"><a href="#cb12-4"></a>spec_bsvar_lr_sv<span class="sc">$</span>prior<span class="sc">$</span>A <span class="ot">=</span> A_mle</span>
+<span id="cb12-5"><a href="#cb12-5"></a></span>
+<span id="cb12-6"><a href="#cb12-6"></a>spec_bsvar_lr_sv <span class="sc">|&gt;</span></span>
+<span id="cb12-7"><a href="#cb12-7"></a>  <span class="fu">estimate</span>(<span class="at">S =</span> S_burn) <span class="sc">|&gt;</span> </span>
+<span id="cb12-8"><a href="#cb12-8"></a>  <span class="fu">estimate</span>(<span class="at">S =</span> S, <span class="at">thin =</span> thin) <span class="ot">-&gt;</span> soe_bsvar_lr_sv</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="irfs-compute-impulse-responses" class="slide level2">
+<h2>IRFs: Compute impulse responses</h2>
+<div class="footer">
+<p><a href="https://bayesian-econometrics-2023.github.io/be23-lecture8/">Bayesian Structural VARs</a></p>
+</div>
+<div class="cell" data-hash="index_cache/revealjs/unnamed-chunk-13_ffde22f68a2d15093b9b18b30c91f966">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a>ir_bsvar0       <span class="ot">=</span> <span class="fu">compute_impulse_responses</span>(soe_bsvar0, <span class="at">horizon =</span> <span class="dv">20</span>)</span>
+<span id="cb13-2"><a href="#cb13-2"></a>ir_bsvar0[,<span class="dv">3</span>,,] <span class="ot">=</span> <span class="fl">0.25</span> <span class="sc">*</span> ir_bsvar0[,<span class="dv">3</span>,,] <span class="sc">/</span> <span class="fu">mean</span>(ir_bsvar0[<span class="dv">3</span>,<span class="dv">3</span>,<span class="dv">1</span>,])</span>
+<span id="cb13-3"><a href="#cb13-3"></a></span>
+<span id="cb13-4"><a href="#cb13-4"></a>ir_bsvar        <span class="ot">=</span> <span class="fu">compute_impulse_responses</span>(soe_bsvar, <span class="at">horizon =</span> <span class="dv">20</span>)</span>
+<span id="cb13-5"><a href="#cb13-5"></a>ir_bsvar[,<span class="dv">3</span>,,]  <span class="ot">=</span> <span class="fl">0.25</span> <span class="sc">*</span> ir_bsvar[,<span class="dv">3</span>,,] <span class="sc">/</span> <span class="fu">mean</span>(ir_bsvar[<span class="dv">3</span>,<span class="dv">3</span>,<span class="dv">1</span>,])</span>
+<span id="cb13-6"><a href="#cb13-6"></a></span>
+<span id="cb13-7"><a href="#cb13-7"></a>ir_bsvar_lr        <span class="ot">=</span> <span class="fu">compute_impulse_responses</span>(soe_bsvar_lr, <span class="at">horizon =</span> <span class="dv">20</span>)</span>
+<span id="cb13-8"><a href="#cb13-8"></a>ir_bsvar_lr[,<span class="dv">3</span>,,]  <span class="ot">=</span> <span class="fl">0.25</span> <span class="sc">*</span> ir_bsvar_lr[,<span class="dv">3</span>,,] <span class="sc">/</span> <span class="fu">mean</span>(ir_bsvar_lr[<span class="dv">3</span>,<span class="dv">3</span>,<span class="dv">1</span>,])</span>
+<span id="cb13-9"><a href="#cb13-9"></a></span>
+<span id="cb13-10"><a href="#cb13-10"></a>ir_bsvar_msh        <span class="ot">=</span> <span class="fu">compute_impulse_responses</span>(soe_bsvar_msh, <span class="at">horizon =</span> <span class="dv">20</span>)</span>
+<span id="cb13-11"><a href="#cb13-11"></a>ir_bsvar_msh[,<span class="dv">3</span>,,]  <span class="ot">=</span> <span class="fl">0.25</span> <span class="sc">*</span> ir_bsvar_msh[,<span class="dv">3</span>,,] <span class="sc">/</span> <span class="fu">mean</span>(ir_bsvar_msh[<span class="dv">3</span>,<span class="dv">3</span>,<span class="dv">1</span>,])</span>
+<span id="cb13-12"><a href="#cb13-12"></a></span>
+<span id="cb13-13"><a href="#cb13-13"></a>ir_bsvar_lr_msh        <span class="ot">=</span> <span class="fu">compute_impulse_responses</span>(soe_bsvar_lr_msh, <span class="at">horizon =</span> <span class="dv">20</span>)</span>
+<span id="cb13-14"><a href="#cb13-14"></a>ir_bsvar_lr_msh[,<span class="dv">3</span>,,]  <span class="ot">=</span> <span class="fl">0.25</span> <span class="sc">*</span> ir_bsvar_lr_msh[,<span class="dv">3</span>,,] <span class="sc">/</span> <span class="fu">mean</span>(ir_bsvar_lr_msh[<span class="dv">3</span>,<span class="dv">3</span>,<span class="dv">1</span>,])</span>
+<span id="cb13-15"><a href="#cb13-15"></a></span>
+<span id="cb13-16"><a href="#cb13-16"></a>ir_bsvar_sv        <span class="ot">=</span> <span class="fu">compute_impulse_responses</span>(soe_bsvar_sv, <span class="at">horizon =</span> <span class="dv">20</span>)</span>
+<span id="cb13-17"><a href="#cb13-17"></a>ir_bsvar_sv[,<span class="dv">3</span>,,]  <span class="ot">=</span> <span class="fl">0.25</span> <span class="sc">*</span> ir_bsvar_sv[,<span class="dv">3</span>,,] <span class="sc">/</span> <span class="fu">mean</span>(ir_bsvar_sv[<span class="dv">3</span>,<span class="dv">3</span>,<span class="dv">1</span>,])</span>
+<span id="cb13-18"><a href="#cb13-18"></a></span>
+<span id="cb13-19"><a href="#cb13-19"></a>ir_bsvar_lr_sv        <span class="ot">=</span> <span class="fu">compute_impulse_responses</span>(soe_bsvar_lr_sv, <span class="at">horizon =</span> <span class="dv">20</span>)</span>
+<span id="cb13-20"><a href="#cb13-20"></a>ir_bsvar_lr_sv[,<span class="dv">3</span>,,]  <span class="ot">=</span> <span class="fl">0.25</span> <span class="sc">*</span> ir_bsvar_lr_sv[,<span class="dv">3</span>,,] <span class="sc">/</span> <span class="fu">mean</span>(ir_bsvar_lr_sv[<span class="dv">3</span>,<span class="dv">3</span>,<span class="dv">1</span>,])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="irfs-zero-vs.-mle-prior-mean" class="slide level2">
+<h2>IRFs: Zero vs.&nbsp;MLE prior mean</h2>
+<div class="footer">
+<p><a href="https://bayesian-econometrics-2023.github.io/be23-lecture8/">Bayesian Structural VARs</a></p>
+</div>
+
+<img data-src="index_files/figure-revealjs/unnamed-chunk-14-1.png" width="960" class="r-stretch quarto-figure-center"></section>
+<section id="irfs-recursive-vs.-extended-homosk" class="slide level2">
+<h2>IRFs: Recursive vs.&nbsp;Extended (homosk)</h2>
+<div class="footer">
+<p><a href="https://bayesian-econometrics-2023.github.io/be23-lecture8/">Bayesian Structural VARs</a></p>
+</div>
+
+<img data-src="index_files/figure-revealjs/unnamed-chunk-15-1.png" width="960" class="r-stretch quarto-figure-center"></section>
+<section id="irfs-homosk-vs.-msh-vs.-sv-recursive" class="slide level2">
+<h2>IRFs: Homosk vs.&nbsp;MSH vs.&nbsp;SV (Recursive)</h2>
+<div class="footer">
+<p><a href="https://bayesian-econometrics-2023.github.io/be23-lecture8/">Bayesian Structural VARs</a></p>
+</div>
+
+<img data-src="index_files/figure-revealjs/unnamed-chunk-16-1.png" width="960" class="r-stretch quarto-figure-center"></section>
+<section id="irfs-homosk-vs.-msh-vs.-sv-extended" class="slide level2">
+<h2>IRFs: Homosk vs.&nbsp;MSH vs.&nbsp;SV (Extended)</h2>
+<div class="footer">
+<p><a href="https://bayesian-econometrics-2023.github.io/be23-lecture8/">Bayesian Structural VARs</a></p>
+</div>
+
+<img data-src="index_files/figure-revealjs/unnamed-chunk-17-1.png" width="960" class="r-stretch quarto-figure-center"></section>
+<section id="standard-deviations-recursive" class="slide level2">
+<h2>Standard Deviations (Recursive)</h2>
+<div class="footer">
+<p><a href="https://bayesian-econometrics-2023.github.io/be23-lecture8/">Bayesian Structural VARs</a></p>
+</div>
+
+<img data-src="index_files/figure-revealjs/unnamed-chunk-18-1.png" width="960" class="r-stretch quarto-figure-center"></section>
+<section id="standard-deviations-extended" class="slide level2">
+<h2>Standard Deviations (Extended)</h2>
+<div class="footer">
+<p><a href="https://bayesian-econometrics-2023.github.io/be23-lecture8/">Bayesian Structural VARs</a></p>
+</div>
+
+<img data-src="index_files/figure-revealjs/unnamed-chunk-19-1.png" width="960" class="r-stretch quarto-figure-center"></section>
+<section id="bsvars-bayesian-estimation-of-structural-vector-autoregressive-models" class="slide level2" data-background-color="#9933FF">
+<h2><a href="https://cran.r-project.org/package=bsvars">bsvars:</a> Bayesian Estimation of Structural Vector Autoregressive Models</h2>
+<div class="footer footer-default">
+
+</div>
+</section>
+    </div>
   </div>
 
   <script>window.backupDefine = window.define; window.define = undefined;</script>
