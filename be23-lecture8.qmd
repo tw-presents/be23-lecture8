@@ -1,0 +1,146 @@
+---
+title: "Effects of Monetary Policy in Australia with Package **bsvars**"
+author: 
+  - name: "Type your name"
+format:
+  html:
+    theme: cosmo
+    toc: true
+
+---
+
+> **Task:** Adjust this **Quarto** template to perform your Bayesian Structural VAR model estimation and impolse response analysis of th monetary policy in Australia. 
+
+# Install packages
+```{r install}
+#| eval: false
+install.packages("devtools")
+devtools::install_git("https://github.com/donotdespair/bsvars.git")
+devtools::install_git("https://github.com/donotdespair/bsvarTVPs.git")
+```
+
+
+# Download the data
+
+```{r data}
+#| echo: true
+#| message: false
+#| warning: false
+#| cache: true
+
+# Gross domestic product (GDP); Chain volume
+rgdp_dwnld      = readrba::read_rba(series_id = "GGDPCVGDP")
+rgdp_tmp        = xts::xts(rgdp_dwnld$value, rgdp_dwnld$date, tclass = 'yearqtr')
+drgdp           = na.omit(400 * diff(log(rgdp_tmp)))
+drgdp           = xts::to.quarterly(drgdp, OHLC = FALSE)
+
+# Consumer price index; All groups; Quarterly change (in per cent)
+picpi_dwnld     = readrba::read_rba(series_id = "GCPIAGSAQP")
+pi              = 4 * xts::xts(picpi_dwnld$value, picpi_dwnld$date, tclass = 'yearqtr')
+pi              = xts::to.quarterly(pi, OHLC = FALSE)
+
+# Interbank Overnight Cash Rate
+cr_dwnld        = readrba::read_rba(series_id = "FIRMMCRID")   # Cash Rate Target
+cr_tmp          = xts::xts(cr_dwnld$value, cr_dwnld$date)
+cr              = xts::to.quarterly(cr_tmp, OHLC = FALSE)
+
+# Real Trade-Weighted Index
+rtwi_dwnld      = readrba::read_rba(series_id = "FRERTWI")
+rtwi_tmp        = xts::xts(rtwi_dwnld$value, rtwi_dwnld$date, tclass = 'yearqtr')
+rtwi            = 100 * na.omit(diff(log(rtwi_tmp)))
+rtwi            = xts::to.quarterly(rtwi, OHLC = FALSE)
+
+y               = na.omit(merge(drgdp, pi, cr, rtwi))
+plot(y, legend.loc = "bottomright")
+```
+
+# Model Equations
+
+\begin{align}
+y_t &= \begin{bmatrix}\Delta rgdp_t & \pi_t & cr_t & \Delta rtwi_t\end{bmatrix}'\\
+y_t &= A_1 y_{t-1} + \dots + A_9 y_{t-9} + \mu_0 + \epsilon_t\\
+B \epsilon_t &= u_t\\
+u_t | Y_{t-1} &\sim\mathcal{N}_N\left(\mathbf{0}_N, \mathbf{I}_N\right)
+\end{align}
+
+# Model Setup
+
+```{r setup}
+set.seed(123)
+library(bsvars)
+
+spec_bsvar      = specify_bsvar$new(
+  as.matrix(y), 
+  p = 5, 
+  stationary = rep(TRUE, 4)
+)
+
+A_mle           = t(solve(
+  tcrossprod(spec_bsvar$data_matrices$X), 
+  tcrossprod(spec_bsvar$data_matrices$X, spec_bsvar$data_matrices$Y)
+))
+spec_bsvar$prior$A = A_mle
+```
+
+# Estimation
+
+## Estimate the model
+
+```{r estimation}
+#| echo: true
+#| message: false
+#| warning: false
+#| error: false
+#| cache: true
+
+spec_bsvar |> 
+  estimate(S = 10000, show_progress = FALSE) |> 
+  estimate(S = 20000, thin = 2) -> soe_bsvar
+```
+
+## Report MCMC convergence
+
+```{r mcmc}
+plot.ts(t(soe_bsvar$posterior$B[,1,]), main = "", col = "#9933FF", xlab = "s")
+```
+
+## Report the Posterior Moments
+
+### Autoregressive parameters $A$
+```{r meansA}
+mean_A  = apply(soe_bsvar$posterior$A, 1:2, mean)
+rownames(mean_A) = colnames(y)
+knitr::kable(mean_A, caption = "Posterior estimates for autoregressive parameters", digits = 3)
+```
+
+### Structural parameters $B$
+```{r meansB}
+mean_B  = apply(soe_bsvar$posterior$B, 1:2, mean)
+rownames(mean_B) = colnames(y)
+knitr::kable(mean_B, caption = "Posterior estimates for structural parameters", digits = 3)
+```
+
+# Impulse Responses analysis
+
+## Responses to the monetary policy shock
+```{r irf}
+ir            = compute_impulse_responses(soe_bsvar, horizon = 20)
+# rescale the cash rate effects
+ir[,3,,] = 0.25 * ir[,3,,] / mean(ir[3,3,1,])
+
+for (n in 1:4) {
+  bsvarTVPs::ribbon_plot(
+    ir[n,3,,],
+    main = paste("Response of",colnames(y)[n],"to the mps"),
+    ylab = colnames(y)[n],
+    xlab = "horizon [quarters]",
+    bty  = "n",
+  )
+  abline(h = 0)
+}
+
+```
+
+# Conclusion!
+
+Thank you!
