@@ -28,8 +28,6 @@ $$ $$
 
 ### Bayesian Estimation
 
-### Heteroskedastic Structural VARs
-
 ### Monetary Policy Analysis Using the  [bsvars](https://cran.r-project.org/package=bsvars) Package
 
 
@@ -175,7 +173,7 @@ What is the contemporaneous effect of the first shock on the second variable?
 
 ## Identification of Structural VARs  {background-color="#9933FF"}
 
-## Identification of Structural VARs Simplified
+## Identification of SVARs (Simplified)
 
 ::: footer
 [Bayesian Structural VARs](https://bayesian-econometrics-2023.github.io/be23-lecture8/)
@@ -196,12 +194,12 @@ What is the contemporaneous effect of the first shock on the second variable?
 - $\mathbf\Sigma$ has $N(N+1)/2$ unique elements given equations
 - $\mathbf{B}$ is an $N\times N$ matrix with $N^2$ unique elements to estimate
 - We cannot estimate all elements of $\mathbf{B}$ using $N(N+1)/2$ equations
-- $\mathbf{B}$ is <text style="color:#9933FF;">**not identified**</p>
+- $\mathbf{B}$ is <text style="color:#9933FF;">**not identified**</text>
 :::
 
 
 
-## Identification of Structural VARs Simplified
+## Identification of SVARs (Simplified)
 
 ::: footer
 [Bayesian Structural VARs](https://bayesian-econometrics-2023.github.io/be23-lecture8/)
@@ -224,7 +222,7 @@ What is the contemporaneous effect of the first shock on the second variable?
 
 
 
-## Identification of Structural VARs Simplified
+## Identification of SVARs (Simplified)
 
 ::: footer
 [Bayesian Structural VARs](https://bayesian-econometrics-2023.github.io/be23-lecture8/)
@@ -367,9 +365,155 @@ B_{41}&B_{42}&B_{43}&B_{44}
   - lagged relationships with all variables
 
 
+## Identification via Heteroskedasticity
+
+::: footer
+[Bayesian Structural VARs](https://bayesian-econometrics-2023.github.io/be23-lecture8/)
+:::
+
+Suppose that: 
+
+- there are two covariances, $\mathbf\Sigma_1$ and $\mathbf\Sigma_2$, associated with the sample
+- matrix $\mathbf{B}$ does not change over time
+- structural shocks are heteroskedastic with covariances $\text{diag}\left(\boldsymbol\sigma_1^2\right)$ and $\text{diag}\left(\boldsymbol\sigma_2^2\right)$
+
+\begin{align}
+\mathbf\Sigma_1 &= \mathbf{B}^{-1}\text{diag}\left(\boldsymbol\sigma_1^2\right)\mathbf{B}^{-1\prime}\\[1ex]
+\mathbf\Sigma_2 &= \mathbf{B}^{-1}\text{diag}\left(\boldsymbol\sigma_2^2\right)\mathbf{B}^{-1\prime}
+\end{align}
+
+### Identification.
+
+- $\mathbf\Sigma_1$ and $\mathbf\Sigma_2$ contain $N^2+N$ unique elements
+- All $N^2$ elements of $\mathbf{B}$ can be estimated
+- Both $N$-vectors $\boldsymbol\sigma_1^2$ and $\boldsymbol\sigma_2^2$ can be estimated due to additional restriction: $E\left[\text{diag}\left(\boldsymbol\sigma_i^2\right)\right] = \mathbf{I}_N$
+
+
+## Identification via Heteroskedasticity
+
+::: footer
+[Bayesian Structural VARs](https://bayesian-econometrics-2023.github.io/be23-lecture8/)
+:::
+
+The setup can be generalised to conditional heteroskedasticity of structural shocks
+
+\begin{align}
+u_t |Y_{t-1} &\sim N_N\left(\mathbf{0}_N, \text{diag}\left(\boldsymbol\sigma_t^2\right)\right)\\[1ex]
+\mathbf\Sigma_t &= \mathbf{B}^{-1}\text{diag}\left(\boldsymbol\sigma_t^2\right)\mathbf{B}^{-1\prime}\\[1ex]
+E\left[\text{diag}\left(\boldsymbol\sigma_t^2\right)\right] &= \mathbf{I}_N
+\end{align}
+
+### Identification.
+
+- Matrix $\mathbf{B}$ is identified up to its rows' sign change and equations' reordering
+- Structural shocks' conditional variances $\boldsymbol\sigma_t^2$ can be estimated
+
+### Heteroskedasticity Modeling.
+
+Choose any (conditional) variance model for $\boldsymbol\sigma_t^2$ that fits the data well.
+
+
+
+
+
+
 ## Dynamic Causal Effects {background-color="#9933FF"}
 
-## Dynamic Causal Effects
+## Impulse response functions
+
+::: footer
+[Bayesian Structural VARs](https://bayesian-econometrics-2023.github.io/be23-lecture8/)
+:::
+
+### Definition.
+
+**Impulse response functions** to *orthogonal shocks* computed for an empirically relevant SVAR model are considered the <text style="color:#9933FF;">**dynamic causal effects**</text> of the underlying shocks $u_t$ on economic measurements $y_{t+i}$ $i$ periods ahead.
+
+\begin{align*}
+\frac{\partial y_{n.t+i}}{\partial u_{j.t}}&=\theta_{nj.i}
+\end{align*}
+
+- $\theta_{nj.i}$ - response of $n$th variable to $j$th shock $i$ periods after shock's occurrence
+
+  for $i=0,1,\dots,h$ and $n,j=1,\dots,N$
+
+
+
+
+## Impulse response functions
+
+::: footer
+[Bayesian Structural VARs](https://bayesian-econometrics-2023.github.io/be23-lecture8/)
+:::
+
+### Definition.
+
+**Impulse response functions** to *orthogonal shocks* computed for an empirically relevant SVAR model are considered the <text style="color:#9933FF;">**dynamic causal effects**</text> of the underlying shocks $u_t$ on economic measurements $y_{t+i}$ $i$ periods ahead.
+
+\begin{align*}
+\frac{\partial y_{t+i}}{\partial u_t}&=\underset{N\times N}{\mathbf\Theta_i}
+\end{align*}
+
+- $\mathbf\Theta_i$ - responses of all of the variables to all of the shocks $i$ periods after shocks' occurrence
+
+  for $i=0,1,\dots,h$ and $n,j=1,\dots,N$
+
+
+
+
+
+## Impulse response functions
+
+::: footer
+[Bayesian Structural VARs](https://bayesian-econometrics-2023.github.io/be23-lecture8/)
+:::
+
+### At finite horizon.
+
+Define matrices
+
+$$
+\mathbf{A} = \begin{bmatrix}\mathbf{A}_1 & \mathbf{A}_2 &\dots& \mathbf{A}_p\\ &\mathbf{I}_{N(p-1)}&&\mathbf{0}_{N(p-1)\times N} \end{bmatrix}\quad\text{and}\quad
+\mathbf{J} = \begin{bmatrix} \mathbf{I}_{N} & \mathbf{0}_{N\times N(p-1)} \end{bmatrix}
+$$
+Impulse response at horizon $i=0,1,\dots,h$ are equal to:
+
+\begin{align}
+\mathbf\Theta_i &= \mathbf{J}\mathbf{A}^i\mathbf{J}'\mathbf{B}^{-1}
+\end{align}
+where $\mathbf{A}^0=\mathbf{I}_N$, $\mathbf{A}^1=\mathbf{A}$, $\mathbf{A}^2=\mathbf{A}\mathbf{A}$, ...
+
+### At infinite horizon.
+
+Inform about the value of the effect in the long run.
+
+\begin{align}
+\mathbf\Theta_{\infty} &= \left( \mathbf{I}_N - \mathbf{A}_1 - \dots - \mathbf{A}_p \right)^{-1}\mathbf{B}^{-1}
+\end{align}
+
+
+
+
+## Impulse response functions
+
+::: footer
+[Bayesian Structural VARs](https://bayesian-econometrics-2023.github.io/be23-lecture8/)
+:::
+
+### Bayesian Estimation.
+
+#### Step 1. Estimate the model
+
+Obtain a sample from the posterior distribution 
+$$\left\{ \mathbf{A}^{(s)},\mathbf{B}^{(s)} \right\}_{s=1}^{S}$$
+
+#### Step 2. Compute impulse responses
+
+For each of the $S$ draws, compute $\mathbf\Theta_i^{(s)}$ as a function of $\mathbf{A}^{(s)}$ and $\mathbf{B}^{(s)}$ and return
+$$\left\{\mathbf\Theta_i^{(s)}\right\}_{s=1}^{S}$$ 
+as a sample drew from the posterior distribution of $\Theta_i$ given data.
+
+
 
 
 
@@ -390,20 +534,239 @@ B_{41}&B_{42}&B_{43}&B_{44}
 [Bayesian Structural VARs](https://bayesian-econometrics-2023.github.io/be23-lecture8/)
 :::
 
-## Heteroskedastic Structural VARs {background-color="#9933FF"}
+$\left.\right.$
 
-## Heteroskedastic Structural VARs
+#### **Gibbs sampler** by [Waggoner & Zha (2003)](https://doi.org/10.1016/S0165-1889(02)00168-9) 
+
+facilitates estimation of Bayesian SVARs for
+
+- lower-triangular and non-recursive identification patterns of exclusion restrictions
+- over-identifying (more than $N(N − 1)/2)$ exclusion restrictions
+- models identified via heteroskedasticity
+
+$\left.\right.$
+
+#### Further extensions include SVARs
+
+- identified through non-normal residuals
+- identified by zero and sign restrictions
+- identified using instrumental variables (Proxy SVARs)
+
+
+
+
+
+## Bayesian Estimation
 
 ::: footer
 [Bayesian Structural VARs](https://bayesian-econometrics-2023.github.io/be23-lecture8/)
 :::
+
+### Exclusion restrictions on the rows of $\mathbf{B}$
+
+$$
+\underset{(1\times N)}{\mathbf{B}_{[n\cdot]}} = \underset{(1\times r_n)}{\mathbf{b}_n} \underset{(r_n\times N)}{V_n} \qquad\text{such that}\qquad
+\mathbf{B} = \begin{bmatrix} \mathbf{b}_1V_1\\ \vdots \\ \mathbf{b}_NV_N \end{bmatrix}
+$$
+
+- $\mathbf{b}_n$ - a $1\times r_n$ vector of unrestricted elements of $n$ row of $\mathbf{B}$
+- $V_n$ - an $r_n\times N$ *fixed* matrix of ones and zeros
+
+### Example.
+
+$$\mathbf{b}_n = \begin{bmatrix} b_1 & b_2\end{bmatrix}\quad V_n = \begin{bmatrix} 1&0&0\\0&0&1\end{bmatrix} \quad\rightarrow\quad \mathbf{B}_{[n\cdot]} = \begin{bmatrix} b_1&0 & b_2\end{bmatrix}
+$$
+
+
+
+
+## Bayesian Estimation
+
+::: footer
+[Bayesian Structural VARs](https://bayesian-econometrics-2023.github.io/be23-lecture8/)
+:::
+
+### The $n$th Structural Equation.
+\begin{align*}
+\mathbf{b}_nV_n\epsilon_t &= u_{n.t}\\
+u_{n.t} &\sim N(0,1)
+\end{align*}
+
+### Matrix Notation.
+\begin{align*}
+E V_n' \mathbf{b}_n' &= U_n\\
+U_n &\sim N_T\left(\mathbf{0}_T,I_T\right)\\[2ex]
+\underset{(T\times1)}{U_n}  &= \begin{bmatrix} u_{n.1} & \dots & u_{n.T} \end{bmatrix}'\\
+\underset{(T\times N)}{E} &\text{ - defined as before}
+\end{align*}
+
+
+
+## Bayesian Estimation
+
+::: footer
+[Bayesian Structural VARs](https://bayesian-econometrics-2023.github.io/be23-lecture8/)
+:::
+
+### Likelihood function.
+\begin{align*}
+L(\mathbf{A},\mathbf{B}|Y,X) &\propto 
+|\text{det}\left( \mathbf{B} \right)|^{T}\exp\left\{ -\frac{1}{2}\sum_{n=1}^N \mathbf{b}_nV_nE'EV_n'\mathbf{b}_n' \right\}\\[1ex]
+E &= Y - X\mathbf{A}
+\end{align*}
+
+### Hierarchical prior for $\mathbf{B}$
+\begin{align*}
+\mathbf{b}_n | \gamma_B &\sim N_{r_n}\left(\mathbf{0}_{r_n}, \gamma_B V_n\underline{S}^{-1}V_n'\right)\\[1ex]
+\gamma_B &\sim IG2(\underline{s},\underline{\nu})
+\end{align*}
+
+- $\underline{S}$ - $N\times N$ prior scale matrix
+- $\underline{s}$ and $\underline{\nu}$ positive scalars of scale and shape
+
+
+
+
+## Bayesian Estimation
+
+::: footer
+[Bayesian Structural VARs](https://bayesian-econometrics-2023.github.io/be23-lecture8/)
+:::
+
+### Kernel of the full conditional posterior for $\mathbf{B}$
+
+\begin{align*}
+p(\mathbf{B}|Y,X,\mathbf{A}, \gamma_B)&\propto
+|\text{det}\left( \mathbf{B} \right)|^{T}\exp\left\{ -\frac{1}{2}\sum_{n=1}^N \mathbf{b}_n \overline{S}^{-1}\mathbf{b}_n' \right\}\\[1ex]
+\overline{S}^{-1} &= V_n\left[ \gamma_B^{-1}\underline{S}^{-1} + (Y-X\mathbf{A})(Y-X\mathbf{A})' \right]V_n'\\[2ex]
+\end{align*}
+
+- This is a kernel of a *Generalised-Normal* distribution
+- A feasible Gibbs sampler was proposed by by [Waggoner & Zha (2003)](https://doi.org/10.1016/S0165-1889(02)00168-9)
+- The Gibbs sampler draws from the full conditional posterior for $n = 1,\dots,N$:
+$$ p(\mathbf{b}_n | \mathbf{b}_1,\dots, \mathbf{b}_{n-1},\mathbf{b}_{n+1}, \mathbf{b}_N) $$
+
+
+
 
 
 
 
 ## Monetary Policy Analysis Using R Package [bsvars](https://cran.r-project.org/package=bsvars) {background-color="#9933FF"}
 
-## Data preparation
+
+## [bsvars](https://cran.r-project.org/package=bsvars) an R Package
+
+::: footer
+[Bayesian Structural VARs](https://bayesian-econometrics-2023.github.io/be23-lecture8/)
+:::
+
+![](cran.png)
+
+
+
+
+## [bsvars](https://cran.r-project.org/package=bsvars) an R Package: Features
+
+::: footer
+[Bayesian Structural VARs](https://bayesian-econometrics-2023.github.io/be23-lecture8/)
+:::
+
+- Bayesian estimation of Structural VARs
+- identification via:
+  - exclusion restrictions 
+  - heteroskedasticity
+  - non-normality
+- six heteroskedastic processes
+- efficient and fast Gibbs sampler
+- excellent computational speed
+- frontier econometric techniques
+- compiled code using **cpp** via [**Rcpp**](https://www.rcpp.org) and [**RcppArmadillo**](https://cran.r-project.org/package=RcppArmadillo)
+- data analysis in **R**
+
+
+
+## [bsvars](https://cran.r-project.org/package=bsvars) an R Package: Features
+
+::: footer
+[Bayesian Structural VARs](https://bayesian-econometrics-2023.github.io/be23-lecture8/)
+:::
+
+![](progress.png)
+
+
+
+## [bsvars](https://cran.r-project.org/package=bsvars) an R Package: Features
+
+::: footer
+[Bayesian Structural VARs](https://bayesian-econometrics-2023.github.io/be23-lecture8/)
+:::
+
+- simple model setup using `specify_*()` 
+- flexibility in setting priors, restrictions, etc.
+- one function for estimation `estimate()` 
+- posterior processing utility functions
+
+### The simplest workflow using pipe.
+
+```{r}
+#| eval: false
+
+library(bsvars)
+
+data(us_fiscal_lsuw)
+set.seed(1)
+
+us_fiscal_lsuw |>
+  specify_bsvar_sv$new(p = 2) |>
+  estimate(S = 1000) |> 
+  estimate(S = 5000) |> 
+  compute_impulse_responses(horizon = 8) -> irfs
+```
+
+
+
+
+
+## Australian Monetary Policy Analysis
+
+::: footer
+[Bayesian Structural VARs](https://bayesian-econometrics-2023.github.io/be23-lecture8/)
+:::
+
+Based on [Turnip (2017)]( https://doi.org/10.1111/1475-4932.12345)
+
+### System of four variables.
+
+\begin{align}
+y_t = \begin{bmatrix} \Delta rgdp_t & \pi_t & cr_t & \Delta rtwi_t \end{bmatrix}'
+\end{align}
+
+### Alternative identification patterns.
+
+\begin{align}
+\textbf{lower-triangular} && \textbf{extended}\\
+\begin{bmatrix}
+B_{11}&0&0&0\\
+B_{21}&B_{22}&0&0\\
+B_{31}&B_{32}&B_{33}&0\\
+B_{41}&B_{42}&B_{43}&B_{44}
+\end{bmatrix}
+\begin{bmatrix} \Delta rgdp_t \\ \pi_t \\ cr_t \\ \Delta rtwi_t \end{bmatrix} &&
+\begin{bmatrix}
+B_{11}&0&0&0\\
+B_{21}&B_{22}&0&0\\
+B_{31}&B_{32}&B_{33}&B_{34}\\
+B_{41}&B_{42}&B_{43}&B_{44}
+\end{bmatrix}
+\begin{bmatrix} \Delta rgdp_t \\ \pi_t \\ cr_t \\ \Delta rtwi_t \end{bmatrix} 
+\end{align}
+
+- In the **extended** model, the monetary policy shock is not identified
+- Use identification via heteroskedasticity to identify it
+
+
+## Data preparation 
 
 ```{r}
 #| label: data
@@ -433,9 +796,9 @@ cr              = xts::to.quarterly(cr_tmp, OHLC = FALSE)
 rtwi_dwnld      = readrba::read_rba(series_id = "FRERTWI")
 rtwi_tmp        = xts::xts(rtwi_dwnld$value, rtwi_dwnld$date, tclass = 'yearqtr')
 rtwi            = 100 * na.omit(diff(log(rtwi_tmp)))
-rtwi            = xts::to.quarterly(rtwi, OHLC = FALSE)
+drtwi            = xts::to.quarterly(rtwi, OHLC = FALSE)
 
-y               = na.omit(merge(drgdp, pi, cr, rtwi))
+y               = na.omit(merge(drgdp, pi, cr, drtwi))
 plot(y, main = "Australian monetary system", 
      legend.loc = "bottomleft", col = c("#FF00FF","#990099","#9933FF","#330033"))
 ```
