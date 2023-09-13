@@ -766,7 +766,7 @@ B_{41}&B_{42}&B_{43}&B_{44}
 - Use identification via heteroskedasticity to identify it
 
 
-## Data preparation 
+## Four-Variable Monetary System
 
 ```{r}
 #| label: data
