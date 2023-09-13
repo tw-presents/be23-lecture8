@@ -1231,7 +1231,7 @@ for (n in 1:4) {
 
 
 
-## Standard Deviations (Recursive)
+## SDs: MSH vs. SV (Recursive)
 
 ::: footer
 [Bayesian Structural VARs](https://bayesian-econometrics-2023.github.io/be23-lecture8/)
@@ -1271,7 +1271,7 @@ for (n in 1:4) {
 
 
 
-## Standard Deviations (Extended)
+## SDs: MSH vs. SV (Extended)
 
 ::: footer
 [Bayesian Structural VARs](https://bayesian-econometrics-2023.github.io/be23-lecture8/)
