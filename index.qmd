@@ -473,15 +473,15 @@ Choose any (conditional) variance model for $\boldsymbol\sigma_t^2$ that fits th
 Define matrices
 
 $$
-\mathbf{A} = \begin{bmatrix}\mathbf{A}_1 & \mathbf{A}_2 &\dots& \mathbf{A}_p\\ &\mathbf{I}_{N(p-1)}&&\mathbf{0}_{N(p-1)\times N} \end{bmatrix}\quad\text{and}\quad
-\mathbf{J} = \begin{bmatrix} \mathbf{I}_{N} & \mathbf{0}_{N\times N(p-1)} \end{bmatrix}
+\underset{(pN\times pN)}{\mathbb{A}} = \begin{bmatrix}\mathbf{A}_1 & \mathbf{A}_2 &\dots& \mathbf{A}_p\\ &\mathbf{I}_{N(p-1)}&&\mathbf{0}_{N(p-1)\times N} \end{bmatrix}\quad\text{and}\quad
+\underset{(N\times pN)}{\mathbf{J}} = \begin{bmatrix} \mathbf{I}_{N} & \mathbf{0}_{N\times N(p-1)} \end{bmatrix}
 $$
 Impulse response at horizon $i=0,1,\dots,h$ are equal to:
 
 \begin{align}
-\mathbf\Theta_i &= \mathbf{J}\mathbf{A}^i\mathbf{J}'\mathbf{B}^{-1}
+\mathbf\Theta_i &= \mathbf{J}\mathbb{A}^i\mathbf{J}'\mathbf{B}^{-1}
 \end{align}
-where $\mathbf{A}^0=\mathbf{I}_N$, $\mathbf{A}^1=\mathbf{A}$, $\mathbf{A}^2=\mathbf{A}\mathbf{A}$, ...
+where $\mathbb{A}^0=\mathbf{I}_N$, $\mathbb{A}^1=\mathbb{A}$, $\mathbb{A}^2=\mathbb{A}\mathbb{A}$, ...
 
 ### At infinite horizon.
 
@@ -637,14 +637,14 @@ E &= Y - X\mathbf{A}
 
 \begin{align*}
 p(\mathbf{B}|Y,X,\mathbf{A}, \gamma_B)&\propto
-|\text{det}\left( \mathbf{B} \right)|^{T}\exp\left\{ -\frac{1}{2}\sum_{n=1}^N \mathbf{b}_n \overline{S}^{-1}\mathbf{b}_n' \right\}\\[1ex]
-\overline{S}^{-1} &= V_n\left[ \gamma_B^{-1}\underline{S}^{-1} + (Y-X\mathbf{A})(Y-X\mathbf{A})' \right]V_n'\\[2ex]
+|\text{det}\left( \mathbf{B} \right)|^{T}\exp\left\{ -\frac{1}{2}\sum_{n=1}^N \mathbf{b}_n \overline{S}_n^{-1}\mathbf{b}_n' \right\}\\[1ex]
+\overline{S}_n^{-1} &= V_n\left[ \gamma_B^{-1}\underline{S}^{-1} + (Y-X\mathbf{A})'(Y-X\mathbf{A}) \right]V_n'\\[2ex]
 \end{align*}
 
 - This is a kernel of a *Generalised-Normal* distribution
 - A feasible Gibbs sampler was proposed by by [Waggoner & Zha (2003)](https://doi.org/10.1016/S0165-1889(02)00168-9)
 - The Gibbs sampler draws from the full conditional posterior for $n = 1,\dots,N$:
-$$ p(\mathbf{b}_n | \mathbf{b}_1,\dots, \mathbf{b}_{n-1},\mathbf{b}_{n+1}, \mathbf{b}_N) $$
+$$ p(\mathbf{b}_n | \mathbf{b}_1,\dots, \mathbf{b}_{n-1},\mathbf{b}_{n+1}, \mathbf{b}_N, \mathbf{A}, \gamma_B, Y, X) $$
 
 
 

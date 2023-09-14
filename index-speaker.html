@@ -769,12 +769,12 @@ E\left[\text{diag}\left(\boldsymbol\sigma_t^2\right)\right] &amp;= \mathbf{I}_N
 <h3 id="at-finite-horizon.">At finite horizon.</h3>
 <p>Define matrices</p>
 <p><span class="math display">\[
-\mathbf{A} = \begin{bmatrix}\mathbf{A}_1 &amp; \mathbf{A}_2 &amp;\dots&amp; \mathbf{A}_p\\ &amp;\mathbf{I}_{N(p-1)}&amp;&amp;\mathbf{0}_{N(p-1)\times N} \end{bmatrix}\quad\text{and}\quad
-\mathbf{J} = \begin{bmatrix} \mathbf{I}_{N} &amp; \mathbf{0}_{N\times N(p-1)} \end{bmatrix}
+\underset{(pN\times pN)}{\mathbb{A}} = \begin{bmatrix}\mathbf{A}_1 &amp; \mathbf{A}_2 &amp;\dots&amp; \mathbf{A}_p\\ &amp;\mathbf{I}_{N(p-1)}&amp;&amp;\mathbf{0}_{N(p-1)\times N} \end{bmatrix}\quad\text{and}\quad
+\underset{(N\times pN)}{\mathbf{J}} = \begin{bmatrix} \mathbf{I}_{N} &amp; \mathbf{0}_{N\times N(p-1)} \end{bmatrix}
 \]</span> Impulse response at horizon <span class="math inline">\(i=0,1,\dots,h\)</span> are equal to:</p>
 <p><span class="math display">\[\begin{align}
-\mathbf\Theta_i &amp;= \mathbf{J}\mathbf{A}^i\mathbf{J}'\mathbf{B}^{-1}
-\end{align}\]</span> where <span class="math inline">\(\mathbf{A}^0=\mathbf{I}_N\)</span>, <span class="math inline">\(\mathbf{A}^1=\mathbf{A}\)</span>, <span class="math inline">\(\mathbf{A}^2=\mathbf{A}\mathbf{A}\)</span>, …</p>
+\mathbf\Theta_i &amp;= \mathbf{J}\mathbb{A}^i\mathbf{J}'\mathbf{B}^{-1}
+\end{align}\]</span> where <span class="math inline">\(\mathbb{A}^0=\mathbf{I}_N\)</span>, <span class="math inline">\(\mathbb{A}^1=\mathbb{A}\)</span>, <span class="math inline">\(\mathbb{A}^2=\mathbb{A}\mathbb{A}\)</span>, …</p>
 <h3 id="at-infinite-horizon.">At infinite horizon.</h3>
 <p>Inform about the value of the effect in the long run.</p>
 <p><span class="math display">\[\begin{align}
@@ -881,13 +881,13 @@ E &amp;= Y - X\mathbf{A}
 <h3 id="kernel-of-the-full-conditional-posterior-for-mathbfb">Kernel of the full conditional posterior for <span class="math inline">\(\mathbf{B}\)</span></h3>
 <p><span class="math display">\[\begin{align*}
 p(\mathbf{B}|Y,X,\mathbf{A}, \gamma_B)&amp;\propto
-|\text{det}\left( \mathbf{B} \right)|^{T}\exp\left\{ -\frac{1}{2}\sum_{n=1}^N \mathbf{b}_n \overline{S}^{-1}\mathbf{b}_n' \right\}\\[1ex]
-\overline{S}^{-1} &amp;= V_n\left[ \gamma_B^{-1}\underline{S}^{-1} + (Y-X\mathbf{A})(Y-X\mathbf{A})' \right]V_n'\\[2ex]
+|\text{det}\left( \mathbf{B} \right)|^{T}\exp\left\{ -\frac{1}{2}\sum_{n=1}^N \mathbf{b}_n \overline{S}_n^{-1}\mathbf{b}_n' \right\}\\[1ex]
+\overline{S}_n^{-1} &amp;= V_n\left[ \gamma_B^{-1}\underline{S}^{-1} + (Y-X\mathbf{A})'(Y-X\mathbf{A}) \right]V_n'\\[2ex]
 \end{align*}\]</span></p>
 <ul>
 <li>This is a kernel of a <em>Generalised-Normal</em> distribution</li>
 <li>A feasible Gibbs sampler was proposed by by <a href="https://doi.org/10.1016/S0165-1889(02)00168-9">Waggoner &amp; Zha (2003)</a></li>
-<li>The Gibbs sampler draws from the full conditional posterior for <span class="math inline">\(n = 1,\dots,N\)</span>: <span class="math display">\[ p(\mathbf{b}_n | \mathbf{b}_1,\dots, \mathbf{b}_{n-1},\mathbf{b}_{n+1}, \mathbf{b}_N) \]</span></li>
+<li>The Gibbs sampler draws from the full conditional posterior for <span class="math inline">\(n = 1,\dots,N\)</span>: <span class="math display">\[ p(\mathbf{b}_n | \mathbf{b}_1,\dots, \mathbf{b}_{n-1},\mathbf{b}_{n+1}, \mathbf{b}_N, \mathbf{A}, \gamma_B, Y, X) \]</span></li>
 </ul>
 </section>
 <section id="monetary-policy-analysis-using-r-package-bsvars" class="slide level2" data-background-color="#9933FF">
